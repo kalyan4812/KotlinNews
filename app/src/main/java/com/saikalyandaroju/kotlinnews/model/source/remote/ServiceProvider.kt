@@ -1,15 +1,9 @@
-package com.saikalyandaroju.kotlinnews.source.remote
-
-import com.saikalyandaroju.kotlinnews.utils.Constants.Companion.BASE_URL
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+package com.saikalyandaroju.kotlinnews.model.source.remote
 
 
 class ServiceProvider {
 
-    companion object {
+   /* companion object {
 
         // lazy means ,we only intialize once.
         private val retrofit by lazy {
@@ -23,5 +17,5 @@ class ServiceProvider {
         val requestApi by lazy {
             retrofit.create(NewsApi::class.java)
         }
-    }
+    }*/
 }

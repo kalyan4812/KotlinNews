@@ -4,27 +4,31 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.saikalyandaroju.kotlinnews.R
-import com.saikalyandaroju.kotlinnews.adapters.NewsAdapter
-import com.saikalyandaroju.kotlinnews.baseclasses.BaseFragment
-import com.saikalyandaroju.kotlinnews.source.models.Article
+import com.saikalyandaroju.kotlinnews.model.adapters.NewsAdapter
+import com.saikalyandaroju.kotlinnews.utils.baseclasses.BaseFragment
+import com.saikalyandaroju.kotlinnews.model.source.models.Article
 import com.saikalyandaroju.kotlinnews.ui.viewmodel.NewsViewModel
-import com.saikalyandaroju.kotlinnews.utils.NetworkResponseHandler
+import com.saikalyandaroju.kotlinnews.utils.Network.NetworkResponseHandler
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_news.paginationProgressBar
 import kotlinx.android.synthetic.main.fragment_search_news.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class searchNewsFragment : BaseFragment<NewsViewModel>() {
     private val TAG = "searchNewsFragment"
-    lateinit var newsAdapter: NewsAdapter
-
+    @Inject
+    lateinit var newsAdapter:NewsAdapter
+    val viewModel: NewsViewModel by viewModels()
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_search_news
@@ -63,7 +67,7 @@ class searchNewsFragment : BaseFragment<NewsViewModel>() {
                 delay(500L)
                 query?.let {
                     if (query.toString().isNotEmpty()) {
-                        getViewModel()?.getSearchNews(query.toString())
+                        viewModel.getSearchNews(query.toString())
                     }
                 }
             }
@@ -71,7 +75,7 @@ class searchNewsFragment : BaseFragment<NewsViewModel>() {
     }
 
     private fun subscribeToObservers() {
-        getViewModel()?.searchNewsresponse?.observe(viewLifecycleOwner, Observer { response ->
+        viewModel.searchNewsresponse?.observe(viewLifecycleOwner, Observer { response ->
 
             when (response) {
                 is NetworkResponseHandler.Success -> {
@@ -105,7 +109,7 @@ class searchNewsFragment : BaseFragment<NewsViewModel>() {
     }
 
     private fun initRecyclerView(view: View?) {
-        newsAdapter = NewsAdapter()
+
         rvSearchNews.apply {
             adapter = newsAdapter
             layoutManager = LinearLayoutManager(activity)

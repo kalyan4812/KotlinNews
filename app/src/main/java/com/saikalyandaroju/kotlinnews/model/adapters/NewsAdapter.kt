@@ -1,4 +1,4 @@
-package com.saikalyandaroju.kotlinnews.adapters
+package com.saikalyandaroju.kotlinnews.model.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,15 +6,16 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
 import com.saikalyandaroju.kotlinnews.R
-import com.saikalyandaroju.kotlinnews.source.models.Article
+import com.saikalyandaroju.kotlinnews.model.source.models.Article
 import kotlinx.android.synthetic.main.item_article.view.*
 
 
-class NewsAdapter : RecyclerView.Adapter<NewsAdapter.NewsHolder>() {
+class NewsAdapter(var requestManager: RequestManager) : RecyclerView.Adapter<NewsAdapter.NewsHolder>() {
 
     private lateinit var onClickListener: ClickListener
+
 
 
     //DiffUtil calculates differrnces b/w old list and new list ,only updates items which are changed.
@@ -52,8 +53,10 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.NewsHolder>() {
     override fun onBindViewHolder(holder: NewsHolder, position: Int) {
         val article = differ.currentList[position]
         holder.itemView.apply {
-            Glide.with(holder.itemView.getContext()).load(article.urlToImage)
-                .placeholder(R.drawable.placeholder).error(R.drawable.placeholder)
+            //Glide.with(holder.itemView.getContext()).load(article.urlToImage)
+
+
+            requestManager.load(article.urlToImage).placeholder(R.drawable.placeholder).error(R.drawable.placeholder)
                 .into(ivArticleImage);
             tvSource.setText(article.title);
 

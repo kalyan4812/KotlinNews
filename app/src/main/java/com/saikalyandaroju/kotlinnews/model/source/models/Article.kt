@@ -1,8 +1,7 @@
-package com.saikalyandaroju.kotlinnews.source.models
+package com.saikalyandaroju.kotlinnews.model.source.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.saikalyandaroju.kotlinnews.source.models.Source
 import java.io.Serializable
 
 @Entity(tableName = "articles")

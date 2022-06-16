@@ -1,4 +1,4 @@
-package com.saikalyandaroju.kotlinnews.baseclasses
+package com.saikalyandaroju.kotlinnews.utils.baseclasses
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,15 +7,12 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import com.saikalyandaroju.kotlinnews.repository.NewsRepository
-import com.saikalyandaroju.kotlinnews.source.local.ArticleDatabase
-import com.saikalyandaroju.kotlinnews.ui.viewmodel.NewsViewModel
-import com.saikalyandaroju.kotlinnews.utils.NewsViewModelFactory
 
 
 abstract class BaseFragment<V : ViewModel> : Fragment() {
-    private lateinit var  viewmodel: V
+
+
+   // private val viewmodel: NewsViewModel by viewModels()
 
     @LayoutRes
     abstract fun getLayoutId(): Int
@@ -24,11 +21,15 @@ abstract class BaseFragment<V : ViewModel> : Fragment() {
         setUpViewModel()
     }
 
-     fun setUpViewModel(){
-         val newsRepository=NewsRepository(ArticleDatabase(this.requireContext()))
+    fun setUpViewModel() {
+
+
+        /* val newsRepository=NewsRepository(ArticleDatabase(this.requireContext()))
          val viewModelProviderFactory=NewsViewModelFactory(newsRepository)
-         viewmodel=ViewModelProvider(this,viewModelProviderFactory).get(NewsViewModel::class.java) as V
-     }
+         viewmodel=ViewModelProvider(this,viewModelProviderFactory).get(NewsViewModel::class.java) as V*/
+
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,9 +45,9 @@ abstract class BaseFragment<V : ViewModel> : Fragment() {
         onViewReady(view, savedInstanceState, arguments)
     }
 
-    open fun getViewModel(): V? {
-        return viewmodel
-    }
+    /*open fun getViewModel(): V {
+        return viewmodel as V
+    }*/
 
     abstract fun onViewReady(view: View?, savedStateInstance: Bundle?, arguments: Bundle?)
 }

@@ -1,8 +1,8 @@
-package com.saikalyandaroju.kotlinnews.source.local
+package com.saikalyandaroju.kotlinnews.model.source.local
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.saikalyandaroju.kotlinnews.source.models.Article
+import com.saikalyandaroju.kotlinnews.model.source.models.Article
 
 
 @Dao

@@ -1,4 +1,4 @@
-package com.saikalyandaroju.kotlinnews.source.models
+package com.saikalyandaroju.kotlinnews.model.source.models
 
 data class NewsResponse(
     val articles: List<Article>,

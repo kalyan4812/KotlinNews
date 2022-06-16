@@ -52,6 +52,6 @@
         tools:layout="@layout/fragment_article" >
         <argument
             android:name="article"
-            app:argType="com.saikalyandaroju.kotlinnews.source.models.Article" />
+            app:argType="com.saikalyandaroju.kotlinnews.model.source.models.Article" />
     </fragment>
 </navigation>

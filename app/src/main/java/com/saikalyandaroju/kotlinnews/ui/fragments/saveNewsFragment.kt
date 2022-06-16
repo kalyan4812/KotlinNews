@@ -3,6 +3,7 @@ package com.saikalyandaroju.kotlinnews.ui.fragments
 import android.graphics.*
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -10,18 +11,22 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.saikalyandaroju.kotlinnews.R
-import com.saikalyandaroju.kotlinnews.adapters.NewsAdapter
-import com.saikalyandaroju.kotlinnews.baseclasses.BaseFragment
-import com.saikalyandaroju.kotlinnews.source.models.Article
+import com.saikalyandaroju.kotlinnews.model.adapters.NewsAdapter
+import com.saikalyandaroju.kotlinnews.utils.baseclasses.BaseFragment
+import com.saikalyandaroju.kotlinnews.model.source.models.Article
 import com.saikalyandaroju.kotlinnews.ui.viewmodel.NewsViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_save_news.*
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class saveNewsFragment : BaseFragment<NewsViewModel>() {
 
-    lateinit var newsAdapter: NewsAdapter
-
+    @Inject
+    lateinit var newsAdapter:NewsAdapter
+    val viewModel: NewsViewModel by viewModels()
     lateinit var callback: ItemTouchHelper.Callback
+
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_save_news
@@ -54,11 +59,11 @@ class saveNewsFragment : BaseFragment<NewsViewModel>() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val pos = viewHolder.adapterPosition
                 val article = newsAdapter.getList().get(pos)
-                getViewModel()?.deleteArticle(article)
+                viewModel.deleteArticle(article)
 
                 Snackbar.make(view!!, "Deleted Successfully", Snackbar.LENGTH_SHORT).setAction(
                     "Undo"
-                ) { getViewModel()?.saveArticle(article) }.show()
+                ) { viewModel.saveArticle(article) }.show()
             }
 
             override fun onChildDraw(
@@ -129,7 +134,7 @@ class saveNewsFragment : BaseFragment<NewsViewModel>() {
     }
 
     private fun subscribeToObservers() {
-        getViewModel()?.getSavedNews()?.observe(viewLifecycleOwner, Observer { articles ->
+        viewModel.getSavedNews()?.observe(viewLifecycleOwner, Observer { articles ->
 
             newsAdapter.setList(articles as List<Article>)
 
@@ -154,7 +159,7 @@ class saveNewsFragment : BaseFragment<NewsViewModel>() {
     }
 
     private fun initRecyclerView(view: View?) {
-        newsAdapter = NewsAdapter()
+
         rvSavedNews.apply {
             adapter = newsAdapter
             layoutManager = LinearLayoutManager(activity)

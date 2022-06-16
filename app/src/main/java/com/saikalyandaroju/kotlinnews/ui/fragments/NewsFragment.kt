@@ -3,25 +3,28 @@ package com.saikalyandaroju.kotlinnews.ui.fragments
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.saikalyandaroju.kotlinnews.R
-import com.saikalyandaroju.kotlinnews.adapters.NewsAdapter
-import com.saikalyandaroju.kotlinnews.baseclasses.BaseFragment
-import com.saikalyandaroju.kotlinnews.source.models.Article
+import com.saikalyandaroju.kotlinnews.model.adapters.NewsAdapter
+import com.saikalyandaroju.kotlinnews.utils.baseclasses.BaseFragment
+import com.saikalyandaroju.kotlinnews.model.source.models.Article
 import com.saikalyandaroju.kotlinnews.ui.viewmodel.NewsViewModel
-import com.saikalyandaroju.kotlinnews.utils.NetworkResponseHandler
+import com.saikalyandaroju.kotlinnews.utils.Network.NetworkResponseHandler
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_news.*
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class NewsFragment : BaseFragment<NewsViewModel>() {
 
-
+    val viewModel: NewsViewModel by viewModels()
     private val TAG = "NewsFragment"
 
-    lateinit var newsAdapter: NewsAdapter
+    @Inject
+    lateinit var newsAdapter:NewsAdapter
 
 
     override fun getLayoutId(): Int {
@@ -48,7 +51,7 @@ class NewsFragment : BaseFragment<NewsViewModel>() {
 
 
     private fun subscribeToObservers() {
-        getViewModel()?.breakingNewsresponse?.observe(viewLifecycleOwner, Observer { response ->
+        viewModel.breakingNewsresponse?.observe(viewLifecycleOwner, Observer { response ->
 
             when (response) {
                 is NetworkResponseHandler.Success -> {
@@ -82,7 +85,7 @@ class NewsFragment : BaseFragment<NewsViewModel>() {
     }
 
     private fun initRecyclerView(view: View?) {
-        newsAdapter = NewsAdapter()
+
         rvBreakingNews.apply {
             adapter = newsAdapter
             layoutManager = LinearLayoutManager(activity)

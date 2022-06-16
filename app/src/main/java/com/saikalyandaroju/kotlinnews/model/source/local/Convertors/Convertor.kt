@@ -1,7 +1,7 @@
-package com.saikalyandaroju.kotlinnews.source.local.Convertors
+package com.saikalyandaroju.kotlinnews.model.source.local.Convertors
 
 import androidx.room.TypeConverter
-import com.saikalyandaroju.kotlinnews.source.models.Source
+import com.saikalyandaroju.kotlinnews.model.source.models.Source
 
 class Convertor {
 

@@ -2,16 +2,21 @@ package com.saikalyandaroju.kotlinnews.ui.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.saikalyandaroju.kotlinnews.repository.NewsRepository
-import com.saikalyandaroju.kotlinnews.source.models.Article
-import com.saikalyandaroju.kotlinnews.source.models.NewsResponse
-import com.saikalyandaroju.kotlinnews.utils.NetworkResponseHandler
+import com.saikalyandaroju.kotlinnews.model.repository.NewsRepository
+import com.saikalyandaroju.kotlinnews.model.source.models.Article
+import com.saikalyandaroju.kotlinnews.model.source.models.NewsResponse
+import com.saikalyandaroju.kotlinnews.utils.Network.NetworkResponseHandler
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import retrofit2.Response
+import javax.inject.Inject
 
-class NewsViewModel(val newRepository: NewsRepository) : ViewModel() {
+
+@HiltViewModel
+class NewsViewModel @Inject constructor(val newRepository: NewsRepository,val savedStateHandle: SavedStateHandle) : ViewModel() {
 
     // by default ,we can't use params in constructor of view model.
     // to do constructur mechanism of getting object/our own instance we need cutsom viewmodelfactory.

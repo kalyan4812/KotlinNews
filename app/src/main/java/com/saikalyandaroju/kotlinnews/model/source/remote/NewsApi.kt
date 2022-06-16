@@ -1,6 +1,6 @@
-package com.saikalyandaroju.kotlinnews.source.remote
+package com.saikalyandaroju.kotlinnews.model.source.remote
 
-import com.saikalyandaroju.kotlinnews.source.models.NewsResponse
+import com.saikalyandaroju.kotlinnews.model.source.models.NewsResponse
 import com.saikalyandaroju.kotlinnews.utils.Constants.Companion.API_KEY
 import retrofit2.Response
 import retrofit2.http.GET

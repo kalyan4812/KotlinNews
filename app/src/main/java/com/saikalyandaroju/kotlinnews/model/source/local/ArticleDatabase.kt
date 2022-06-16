@@ -1,16 +1,15 @@
-package com.saikalyandaroju.kotlinnews.source.local
+package com.saikalyandaroju.kotlinnews.model.source.local
 
-import android.content.Context
 import androidx.room.*
-import com.saikalyandaroju.kotlinnews.source.local.Convertors.Convertor
-import com.saikalyandaroju.kotlinnews.source.models.Article
+import com.saikalyandaroju.kotlinnews.model.source.local.Convertors.Convertor
+import com.saikalyandaroju.kotlinnews.model.source.models.Article
 
 @Database(entities = [Article::class], version = 1)
 @TypeConverters(Convertor::class)
 abstract class ArticleDatabase : RoomDatabase() {
     abstract fun getArticleDao(): ArticleDao
 
-    companion object {
+   /* companion object {
 
         @Volatile
         private var articleDatabase: ArticleDatabase? = null
@@ -35,8 +34,8 @@ abstract class ArticleDatabase : RoomDatabase() {
             return Room.databaseBuilder(
                 context.applicationContext,
                 ArticleDatabase::class.java,
-                "ARTICLE_DATABASE"
+                DATABASENAME
             ).build()
         }
-    }
+    }*/
 }
