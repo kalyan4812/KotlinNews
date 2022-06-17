@@ -24,7 +24,7 @@ class NewsFragment : BaseFragment<NewsViewModel>() {
     private val TAG = "NewsFragment"
 
     @Inject
-    lateinit var newsAdapter:NewsAdapter
+    lateinit var newsAdapter: NewsAdapter
 
 
     override fun getLayoutId(): Int {
@@ -35,14 +35,14 @@ class NewsFragment : BaseFragment<NewsViewModel>() {
         initRecyclerView(view)
         subscribeToObservers()
 
-        newsAdapter.setOnClickListener(object:NewsAdapter.ClickListener{
+        newsAdapter.setOnClickListener(object : NewsAdapter.ClickListener {
             override fun onClick(article: Article?) {
-                val bundle=Bundle()
+                val bundle = Bundle()
                 bundle.apply {
-                    putSerializable("article",article)
+                    putSerializable("article", article)
                 }
 
-                findNavController().navigate(R.id.action_newsFragment_to_articleFragment,bundle)
+                findNavController().navigate(R.id.action_newsFragment_to_articleFragment, bundle)
             }
 
         })

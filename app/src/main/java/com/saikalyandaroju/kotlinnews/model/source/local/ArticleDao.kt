@@ -8,7 +8,7 @@ import com.saikalyandaroju.kotlinnews.model.source.models.Article
 @Dao
 interface ArticleDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertArticle(article: Article): Long  // returns id of inserted article.
 
     @Delete

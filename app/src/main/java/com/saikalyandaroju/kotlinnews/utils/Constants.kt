@@ -7,8 +7,9 @@ class Constants {
         const val QUERY_PAGE_SIZE: Int = 20
 
 
-        const val PRAGMA_HEADER = "Pragma"
-        const val CACHE_CONTROL_HEADER = "Cache-Control"
+        const val PRAGMA_HEADER = "Pragma" // it is a header ,attched to http request ,it may not allow request
+        // to use caching.so we remove it while caching the response.
+        const val CACHE_CONTROL_HEADER = "Cache-Control" // cache control from server.
         const val CONNECTION_TIMEOUT: Long = 30000
 
 

@@ -1,32 +1,42 @@
 package com.saikalyandaroju.kotlinnews.ui.viewmodel
 
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.saikalyandaroju.kotlinnews.model.repository.NewsRepository
 import com.saikalyandaroju.kotlinnews.model.source.models.Article
 import com.saikalyandaroju.kotlinnews.model.source.models.NewsResponse
 import com.saikalyandaroju.kotlinnews.utils.Network.NetworkResponseHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import retrofit2.Response
 import javax.inject.Inject
 
 
 @HiltViewModel
-class NewsViewModel @Inject constructor(val newRepository: NewsRepository,val savedStateHandle: SavedStateHandle) : ViewModel() {
+class NewsViewModel @Inject constructor(
+    val newRepository: NewsRepository,
+    val savedStateHandle: SavedStateHandle
+) : ViewModel() {
 
     // by default ,we can't use params in constructor of view model.
     // to do constructur mechanism of getting object/our own instance we need cutsom viewmodelfactory.
-
+    private val TAG = "NewsViewModel"
 
     val breakingNewsresponse: MutableLiveData<NetworkResponseHandler<NewsResponse>> =
         MutableLiveData()
 
     var breakingNewsPage = 1
 
+
+    var isItemPresent = MutableLiveData<Boolean>()
+
+
+    fun getIsItemPresent(): LiveData<Boolean> {
+        return isItemPresent
+    }
 
     init {
         getBreakingNews("us")
@@ -47,10 +57,20 @@ class NewsViewModel @Inject constructor(val newRepository: NewsRepository,val sa
 
     private fun handleNewsResponse(response: Response<NewsResponse>): NetworkResponseHandler<NewsResponse>? {
         if (response.isSuccessful) {
+
+            if (response.raw().networkResponse != null && response.raw().cacheResponse == null) {
+                Log.i(TAG, "Response is from network.")
+                println("Response is from network.")
+            } else if (response.raw().networkResponse == null && response.raw().cacheResponse != null) {
+                Log.i(TAG, "Response is from cache.")
+                println("Response is from cache.")
+            }
+
             response.body()?.let { result ->
-                Log.i("result",result.articles.toString())
+                Log.i("result", result.articles.toString())
                 return NetworkResponseHandler.Success(result)
             }
+
         }
 
         return NetworkResponseHandler.Error(response.message(), null)
@@ -81,8 +101,24 @@ class NewsViewModel @Inject constructor(val newRepository: NewsRepository,val sa
     }
 //-------------------------------------------------------------------------------------------------
 
-    fun saveArticle(article: Article) = viewModelScope.launch {
-        newRepository.insertArticle(article)
+    fun saveArticle(article: Article): Long {
+
+
+        viewModelScope.launch {
+
+            val id = newRepository.insertArticle(article)
+            if (id == -1L) {
+                isItemPresent.postValue(true)
+            } else {
+                isItemPresent.postValue(false)
+            }
+
+
+        }
+
+        return 0
+
+
     }
 
     fun deleteArticle(article: Article) = viewModelScope.launch {

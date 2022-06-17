@@ -58,11 +58,13 @@ class AppModule {
     }
 
 
+    @Singleton
     @Provides
     fun provideRepository(articleDao: ArticleDao, newsApi: NewsApi): NewsRepository {
         return NewsRepository(articleDao, newsApi)
     }
 
+    @Singleton
     @Provides
     fun provideAdapter(requestManager: RequestManager): NewsAdapter {
         return NewsAdapter(requestManager)

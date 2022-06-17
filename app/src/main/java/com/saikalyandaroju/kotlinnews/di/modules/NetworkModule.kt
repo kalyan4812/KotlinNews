@@ -3,6 +3,7 @@ package com.saikalyandaroju.kotlinnews.di.modules
 import android.content.Context
 import android.net.ConnectivityManager
 import android.util.Log
+import com.saikalyandaroju.kotlinnews.di.qualifiers.OnlineInterceptor
 import com.saikalyandaroju.kotlinnews.utils.Constants
 import com.saikalyandaroju.kotlinnews.utils.Constants.Companion.BASE_URL
 import com.saikalyandaroju.kotlinnews.utils.Constants.Companion.CACHE_CONTROL_HEADER
@@ -18,6 +19,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
 import java.util.concurrent.TimeUnit
+import javax.inject.Named
 import javax.inject.Singleton
 
 
@@ -44,33 +46,66 @@ class NetworkModule {
         return Cache(file, 10 * 1024 * 1024)
     }
 
+
     //providing Interceptor
     @Singleton
     @Provides
+    @OnlineInterceptor
+    fun getNetworkInterceptor(@ApplicationContext context: Context): Interceptor {
+        return object : Interceptor {
+            override fun intercept(chain: Interceptor.Chain): Response {
+                val response = chain.proceed(chain.request().newBuilder().build())
+
+                val cacheControl: CacheControl = CacheControl.Builder()
+                    .maxAge(1, TimeUnit.MINUTES)
+                    // if another request made within 1 min,it will be from cache.
+                    .build()
+
+
+
+
+                return response.newBuilder().removeHeader(PRAGMA_HEADER)
+                    .removeHeader(CACHE_CONTROL_HEADER)
+                    .removeHeader("Expires")
+                    .addHeader(CACHE_CONTROL_HEADER, cacheControl.toString())
+                    .build()
+
+
+            }
+
+        }
+    }
+
+
+    @Singleton
+    @Provides
+    @com.saikalyandaroju.kotlinnews.di.qualifiers.Interceptor
     fun getInterceptor(@ApplicationContext context: Context): Interceptor {
         return object : Interceptor {
             override fun intercept(chain: Interceptor.Chain): Response {
-                val response = chain.proceed(chain.request())
+                var request = chain.request()
+
+                if (request.cacheControl.noCache) {
+                    return chain.proceed(request)  // if no cache go for request from network.
+                }
                 val cacheControl: CacheControl
 
-                if (isInternetAvailable(context)) {
+                if (!isInternetAvailable(context)) {
+
                     cacheControl = CacheControl.Builder()
-                        .maxAge(300, TimeUnit.SECONDS)
+                        .maxStale(2, TimeUnit.DAYS).onlyIfCached()
                         .build()
-                    Log.i("check", "$cacheControl\ninternt avaialabe")
-                } else {
-                    cacheControl = CacheControl.Builder()
-                        .maxAge(7, TimeUnit.DAYS)
-                        .build()
+
                     Log.d("check", "$cacheControl\n NO internt avaialabe")
+                    request = request.newBuilder().removeHeader(PRAGMA_HEADER)
+                        .removeHeader(CACHE_CONTROL_HEADER)
+                        .addHeader(CACHE_CONTROL_HEADER, cacheControl.toString())
+                        .build()
                 }
 
+                return chain.proceed(request)
 
-                return response.newBuilder()
-                    .removeHeader(PRAGMA_HEADER)
-                    .removeHeader(CACHE_CONTROL_HEADER)
-                    .addHeader(CACHE_CONTROL_HEADER, cacheControl.toString())
-                    .build()
+
             }
 
         }
@@ -104,11 +139,13 @@ class NetworkModule {
     fun getokhttpclient(
         cache: Cache?,
         httpLoggingInterceptor: HttpLoggingInterceptor,
-        interceptors: Interceptor
+        @com.saikalyandaroju.kotlinnews.di.qualifiers.Interceptor interceptors: Interceptor,
+        @OnlineInterceptor onlineInterceptor: Interceptor
     ): OkHttpClient {
 
         return OkHttpClient.Builder().addInterceptor(httpLoggingInterceptor)
-            .addInterceptor(interceptors)
+            .addNetworkInterceptor(onlineInterceptor) // only used when network is on.
+            .addInterceptor(interceptors) // used in offline or online.
             .cache(cache)
             .readTimeout(Constants.CONNECTION_TIMEOUT, TimeUnit.MILLISECONDS)
             .connectTimeout(Constants.CONNECTION_TIMEOUT, TimeUnit.MILLISECONDS).writeTimeout(

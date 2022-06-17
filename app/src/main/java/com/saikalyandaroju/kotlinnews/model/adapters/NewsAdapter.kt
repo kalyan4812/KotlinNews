@@ -1,5 +1,6 @@
 package com.saikalyandaroju.kotlinnews.model.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,10 +13,11 @@ import com.saikalyandaroju.kotlinnews.model.source.models.Article
 import kotlinx.android.synthetic.main.item_article.view.*
 
 
-class NewsAdapter(var requestManager: RequestManager) : RecyclerView.Adapter<NewsAdapter.NewsHolder>() {
+class NewsAdapter(var requestManager: RequestManager) :
+    RecyclerView.Adapter<NewsAdapter.NewsHolder>() {
 
     private lateinit var onClickListener: ClickListener
-
+    private val TAG = "NewsAdapter"
 
 
     //DiffUtil calculates differrnces b/w old list and new list ,only updates items which are changed.
@@ -52,11 +54,13 @@ class NewsAdapter(var requestManager: RequestManager) : RecyclerView.Adapter<New
 
     override fun onBindViewHolder(holder: NewsHolder, position: Int) {
         val article = differ.currentList[position]
+
         holder.itemView.apply {
             //Glide.with(holder.itemView.getContext()).load(article.urlToImage)
 
 
-            requestManager.load(article.urlToImage).placeholder(R.drawable.placeholder).error(R.drawable.placeholder)
+            requestManager.load(article.urlToImage).placeholder(R.drawable.placeholder)
+                .error(R.drawable.placeholder)
                 .into(ivArticleImage);
             tvSource.setText(article.title);
 
@@ -82,7 +86,6 @@ class NewsAdapter(var requestManager: RequestManager) : RecyclerView.Adapter<New
     }
 
     inner class NewsHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
 
 
     }
