@@ -51,7 +51,7 @@ class NewsViewModel @Inject constructor(
 
         val response = newRepository.getBreakingNews(countryCode, breakingNewsPage)
 
-        breakingNewsresponse.postValue(handleNewsResponse(response))
+        breakingNewsresponse.postValue(response)
 
     }
 
@@ -86,7 +86,7 @@ class NewsViewModel @Inject constructor(
     fun getSearchNews(query: String) = viewModelScope.launch {
         searchNewsresponse.postValue(NetworkResponseHandler.Loading())
         val response = newRepository.getSearchedNews(query, searchNewsPage)
-        searchNewsresponse.postValue(handleSearchNewsResponse(response))
+        searchNewsresponse.postValue(response)
     }
 
     private fun handleSearchNewsResponse(response: Response<NewsResponse>): NetworkResponseHandler<NewsResponse>? {

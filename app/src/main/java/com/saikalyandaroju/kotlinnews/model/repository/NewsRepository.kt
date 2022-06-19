@@ -5,36 +5,53 @@ import com.saikalyandaroju.kotlinnews.model.source.local.ArticleDao
 import com.saikalyandaroju.kotlinnews.model.source.models.Article
 import com.saikalyandaroju.kotlinnews.model.source.models.NewsResponse
 import com.saikalyandaroju.kotlinnews.model.source.remote.NewsApi
+import com.saikalyandaroju.kotlinnews.utils.Network.NetworkResponseHandler
 import retrofit2.Response
 
 
-class NewsRepository(val articleDao: ArticleDao, val newsApi: NewsApi) {
+class NewsRepository(val articleDao: ArticleDao, val newsApi: NewsApi) : GlobalNewsRepository {
 
 
     // network related.
 
-    suspend fun getBreakingNews(countryCode: String, pagenumber: Int) =
-        newsApi.getBreakingNews(countryCode, pagenumber)
+    override suspend fun getBreakingNews(
+        countryCode: String,
+        pagenumber: Int
+    ): NetworkResponseHandler<NewsResponse> {
+        newsApi.getBreakingNews(countryCode, pagenumber).body()?.let {
+            return NetworkResponseHandler.Success(it)
+        }
 
+        return NetworkResponseHandler.Error("Error", null)
 
-    suspend fun getSearchedNews(query: String, pagenumber: Int): Response<NewsResponse> {
+    }
+
+    override suspend fun getSearchedNews(
+        query: String,
+        pagenumber: Int
+    ): NetworkResponseHandler<NewsResponse> {
         Log.i("check", newsApi.toString())
 
-        return newsApi.searchForNews(query, pagenumber)
+        newsApi.searchForNews(query, pagenumber).body()?.let {
+            return NetworkResponseHandler.Success(it)
+        }
+
+        return NetworkResponseHandler.Error("Error", null)
+
     }
 
     // db related.
 
-    suspend fun insertArticle(article: Article): Long {
+    override suspend fun insertArticle(article: Article): Long {
 
         Log.i("check", articleDao.toString())
 
         return articleDao.insertArticle(article)
     }
 
-    suspend fun deleteArticle(article: Article) = articleDao.deleteArticle(article)
+    override suspend fun deleteArticle(article: Article) = articleDao.deleteArticle(article)
 
-    fun getSavedNews() = articleDao.getAllArticles()
+    override fun getSavedNews() = articleDao.getAllArticles()
 
 
 }

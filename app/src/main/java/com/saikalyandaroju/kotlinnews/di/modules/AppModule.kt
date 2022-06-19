@@ -23,8 +23,10 @@ import javax.inject.Singleton
 class AppModule {
 
 
+    // activityretained component-survives on screen rotation and activity recreation.
+
     //provide ApiSource
-    @Singleton
+    @Singleton  // newsapi will be singleton+ it will live as long as application.
     @Provides
     fun getApiSource(retrofit: Retrofit): NewsApi {
         return retrofit.create(NewsApi::class.java)
