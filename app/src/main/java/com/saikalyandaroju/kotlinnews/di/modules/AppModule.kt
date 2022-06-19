@@ -22,6 +22,7 @@ import javax.inject.Singleton
 @Module
 class AppModule {
 
+    // activity retained component-survives screen rotation and activity recreation.
 
     //provide ApiSource
     @Singleton
