@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "789120296351",
+    "project_id": "quicknews-a1553",
+    "storage_bucket": "quicknews-a1553.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:789120296351:android:9f8229142df0b24faa09aa",
+        "android_client_info": {
+          "package_name": "com.saikalyandaroju.kotlinnews"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "789120296351-dgke64abdo9h8c8p2fc6nv6qdgj7ncpe.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.saikalyandaroju.kotlinnews",
+            "certificate_hash": "559a171e2d7d40ee2b08644c91f14245c45541c9"
+          }
+        },
+        {
+          "client_id": "789120296351-p39ne7h930odgb450bsondmkf76digeb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDoRyKQTWwBL-yMka5-n11Sks0AFYZWneI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "789120296351-p39ne7h930odgb450bsondmkf76digeb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
