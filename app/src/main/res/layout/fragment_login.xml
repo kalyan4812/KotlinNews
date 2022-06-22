@@ -47,7 +47,7 @@
         android:orientation="horizontal">
 
 
-       <!---<com.hbb20.CountryCodePicker
+       <com.hbb20.CountryCodePicker
             android:id="@+id/ccp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -56,7 +56,7 @@
             app:ccp_autoDetectCountry="true"
             app:ccp_showNameCode="false"
             tools:ccp_contentColor="#fcfdfd"
-            tools:ccp_textSize="20dp" />-->
+            tools:ccp_textSize="20dp" />
 
         <EditText
             android:id="@+id/phoneNumberEt"

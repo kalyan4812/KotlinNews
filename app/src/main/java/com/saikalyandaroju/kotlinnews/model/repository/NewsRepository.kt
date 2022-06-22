@@ -6,7 +6,7 @@ import com.saikalyandaroju.kotlinnews.model.source.models.Article
 import com.saikalyandaroju.kotlinnews.model.source.models.NewsResponse
 import com.saikalyandaroju.kotlinnews.model.source.remote.NewsApi
 import com.saikalyandaroju.kotlinnews.utils.Network.NetworkResponseHandler
-import retrofit2.Response
+import com.saikalyandaroju.kotlinnews.utils.Network.State
 
 
 class NewsRepository(val articleDao: ArticleDao, val newsApi: NewsApi) : GlobalNewsRepository {
@@ -22,7 +22,7 @@ class NewsRepository(val articleDao: ArticleDao, val newsApi: NewsApi) : GlobalN
             return NetworkResponseHandler.Success(it)
         }
 
-        return NetworkResponseHandler.Error("Error", null)
+        return NetworkResponseHandler.Error(State.ERROR,null,"Error")
 
     }
 
@@ -36,7 +36,7 @@ class NewsRepository(val articleDao: ArticleDao, val newsApi: NewsApi) : GlobalN
             return NetworkResponseHandler.Success(it)
         }
 
-        return NetworkResponseHandler.Error("Error", null)
+        return NetworkResponseHandler.Error(State.ERROR,null,"Error")
 
     }
 

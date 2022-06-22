@@ -2,10 +2,12 @@ package com.saikalyandaroju.kotlinnews.ui.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.*
+import com.saikalyandaroju.kotlinnews.model.repository.GlobalNewsRepository
 import com.saikalyandaroju.kotlinnews.model.repository.NewsRepository
 import com.saikalyandaroju.kotlinnews.model.source.models.Article
 import com.saikalyandaroju.kotlinnews.model.source.models.NewsResponse
 import com.saikalyandaroju.kotlinnews.utils.Network.NetworkResponseHandler
+import com.saikalyandaroju.kotlinnews.utils.Network.State
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
@@ -17,7 +19,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NewsViewModel @Inject constructor(
-    val newRepository: NewsRepository,
+    val newRepository: GlobalNewsRepository,
     val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -73,7 +75,7 @@ class NewsViewModel @Inject constructor(
 
         }
 
-        return NetworkResponseHandler.Error(response.message(), null)
+        return NetworkResponseHandler.Error(State.ERROR,response.body(), null)
 
     }
 
@@ -97,7 +99,7 @@ class NewsViewModel @Inject constructor(
             }
         }
 
-        return NetworkResponseHandler.Error(response.message(), null)
+        return NetworkResponseHandler.Error(State.ERROR,response.body(), null)
     }
 //-------------------------------------------------------------------------------------------------
 

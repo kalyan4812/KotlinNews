@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_loginFragment_to_otpFragment"
             app:destination="@id/otpFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_otpFragment2"
+            app:destination="@id/otpFragment" />
     </fragment>
     <fragment
         android:id="@+id/signupFragment"
@@ -27,5 +30,11 @@
         <action
             android:id="@+id/action_otpFragment_to_signupFragment"
             app:destination="@id/signupFragment" />
+        <argument
+            android:name="number"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_otpFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
     </fragment>
 </navigation>

@@ -6,6 +6,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
 import com.saikalyandaroju.kotlinnews.model.adapters.NewsAdapter
+import com.saikalyandaroju.kotlinnews.model.repository.GlobalNewsRepository
 import com.saikalyandaroju.kotlinnews.model.repository.NewsRepository
 import com.saikalyandaroju.kotlinnews.model.source.local.ArticleDao
 import com.saikalyandaroju.kotlinnews.model.source.local.ArticleDatabase
@@ -62,7 +63,7 @@ class AppModule {
 
     @Singleton
     @Provides
-    fun provideRepository(articleDao: ArticleDao, newsApi: NewsApi): NewsRepository {
+    fun provideRepository(articleDao: ArticleDao, newsApi: NewsApi):GlobalNewsRepository {
         return NewsRepository(articleDao, newsApi)
     }
 
