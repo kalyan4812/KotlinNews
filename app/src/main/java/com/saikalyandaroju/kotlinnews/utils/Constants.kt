@@ -15,5 +15,14 @@ class Constants {
 
         const val DATABASENAME:String="ARTICLE_DATABASE"
 
+
+        //SharedPrefs
+        const val SHARED_DB_KEY="user_info"
+        const val U_NAME="uname"
+        const val U_NUMBER="unumber"
+        const val U_PROFILEPIC="upic"
+        const val OTP_STEP="completed_otp_step"
+        const val PROFILE_STEP="completed_profile_step"
+
     }
 }

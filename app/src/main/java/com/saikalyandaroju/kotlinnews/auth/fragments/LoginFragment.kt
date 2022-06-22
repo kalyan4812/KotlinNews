@@ -33,6 +33,9 @@ class LoginFragment : Fragment() {
     }
 
     private fun listeners() {
+
+        ccp.registerCarrierNumberEditText(phoneNumberEt)
+
         phoneNumberEt.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
@@ -68,7 +71,7 @@ class LoginFragment : Fragment() {
 
                                     putString("number", ccp.fullNumberWithPlus)
                                 }
-                                findNavController().navigate(R.id.action_loginFragment_to_otpFragment)
+                                findNavController().navigate(R.id.action_loginFragment_to_otpFragment,bundle)
 
                             }
 
@@ -81,8 +84,9 @@ class LoginFragment : Fragment() {
                         })
                         setCancelable(false)
                     }
+                    dialog.show()
                 } else {
-                    Toast.makeText(context, "Please Enter a valid number", Toast.LENGTH_SHORT)
+                     Toast.makeText(context, "Please Enter a valid number", Toast.LENGTH_SHORT)
                         .show()
                 }
 

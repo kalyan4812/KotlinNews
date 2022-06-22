@@ -26,6 +26,7 @@
         android:id="@+id/otpFragment"
         android:name="com.saikalyandaroju.kotlinnews.auth.fragments.OtpFragment"
         android:label="fragment_otp"
+        app:popUpTo="@+id/destination_to_pop"
         tools:layout="@layout/fragment_otp" >
         <action
             android:id="@+id/action_otpFragment_to_signupFragment"

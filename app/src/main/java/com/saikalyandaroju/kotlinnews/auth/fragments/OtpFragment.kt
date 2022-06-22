@@ -1,40 +1,56 @@
 package com.saikalyandaroju.kotlinnews.auth.fragments
 
 import android.app.ProgressDialog
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.TextPaint
+import android.text.*
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.firebase.FirebaseException
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
 import com.saikalyandaroju.kotlinnews.R
+import com.saikalyandaroju.kotlinnews.auth.activities.AuthActivity
+import com.saikalyandaroju.kotlinnews.utils.Constants
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_otp.*
+import kotlinx.android.synthetic.main.fragment_otp.view.*
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 
+@AndroidEntryPoint
 class OtpFragment : Fragment() {
 
     val args: OtpFragmentArgs by navArgs()
 
 
+    @Inject
+    lateinit var sharedPreferences: SharedPreferences
+
+    lateinit var editor: SharedPreferences.Editor
+
     private var mCounterDown: CountDownTimer? = null
     private var timeLeft: Long = -1
-    private lateinit var progressDialog:ProgressDialog
+    private lateinit var progressDialog: ProgressDialog
+
 
     private lateinit var phoneAuthProvider: PhoneAuthProvider
-    private lateinit var callbacks:PhoneAuthProvider.OnVerificationStateChangedCallbacks
-    private var mresendToken:PhoneAuthProvider.ForceResendingToken?=null
-
+    private lateinit var callbacks: PhoneAuthProvider.OnVerificationStateChangedCallbacks
+    private var mresendToken: PhoneAuthProvider.ForceResendingToken? = null
+    private lateinit var verificationId: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,18 +62,100 @@ class OtpFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        uiUpdate()
+        editor = sharedPreferences.edit()
+        val number = args.number
+        uiUpdate(number)
+        setUpListeners(number)
     }
 
-    private fun uiUpdate() {
-        val number = args.number
+    private fun setUpListeners(number: String) {
+        verificationBtn.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(view: View) {
+                progressDialog.show()
+                val otp: String = sentcodeEt.text.toString()
+                if (otp.length == 6) {
+
+
+                    val credential =
+                        PhoneAuthProvider.getCredential(verificationId, otp)
+                    FirebaseAuth.getInstance().signInWithCredential(credential)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                progressDialog.dismiss()
+                                editor.putString(Constants.U_NUMBER, number).commit()
+                                editor.putBoolean(Constants.OTP_STEP, true).commit()
+                                findNavController().navigate(R.id.action_otpFragment_to_signupFragment)
+                                Toast.makeText(
+                                    context,
+                                    "Success",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                progressDialog.dismiss()
+                                Toast.makeText(
+                                    context,
+                                    "Failed to Verify",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                } else {
+                    progressDialog.dismiss()
+                    Toast.makeText(context, "otp should be a 6 digit number", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            }
+
+        })
+        sentcodeEt.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                val code = s.toString()
+                if (code.length == 6) {
+                    verificationBtn.isEnabled = true
+                    resendBtn.isEnabled = false
+                }
+
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+
+            }
+
+        })
+
+        resendBtn.setOnClickListener(View.OnClickListener {
+            showTimer(60000)
+            resendBtn.isEnabled = false
+            sentcodeEt.text.clear()
+            // sendOtp(number)
+            PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                number, // Phone number to verify
+                60, // Timeout duration
+                TimeUnit.SECONDS, // Unit of timeout
+                this.activity as AuthActivity, // Activity (for callback binding)
+                callbacks, // OnVerificationStateChangedCallbacks
+                mresendToken
+            )
+        })
+    }
+
+    private fun uiUpdate(number: String) {
+
         verifyTv.append("Verify " + number)
-        waitingTv.append(number + " " + "Wrong Number ?")
-        highLightText(number)
+
+        val textnew: StringBuilder = StringBuilder()
+        textnew.append("Waiting to automatically detect an SMS sent to")
+            .append(" " + number + " ").append("Wrong Number ?")
+
+        waitingTv.text = textnew
+        highLightText(waitingTv.text.toString())
         showTimer(60000)
 
-        progressDialog=createDialog("Sending a verification code",false)
+        progressDialog = createDialog("Sending a verification code", false)
 
         sendOtp(number)
         resendBtn.isVisible = false
@@ -74,21 +172,45 @@ class OtpFragment : Fragment() {
     }
 
     private fun sendOtp(number: String) {
-      progressDialog.show()
+        progressDialog.show()
+        phoneAuthProvider = PhoneAuthProvider.getInstance()
+        callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+            override fun onCodeSent(
+                s: String,
+                resendingToken: PhoneAuthProvider.ForceResendingToken
+            ) {
+                super.onCodeSent(s, resendingToken)
+                verificationId = s
+                mresendToken = resendingToken
+                progressDialog.dismiss();
+                Log.i("info", "codesent");
 
-       callbacks=object :PhoneAuthProvider.OnVerificationStateChangedCallbacks(){
-           override fun onCodeSent(p0: String, p1: PhoneAuthProvider.ForceResendingToken) {
-               super.onCodeSent(p0, p1)
-           }
-           override fun onVerificationCompleted(p0: PhoneAuthCredential) {
-               TODO("Not yet implemented")
-           }
+            }
 
-           override fun onVerificationFailed(p0: FirebaseException) {
-               TODO("Not yet implemented")
-           }
+            override fun onVerificationCompleted(s: PhoneAuthCredential) {
+                val code = s.smsCode
+                code?.let {
+                    sentcodeEt.text = it as Editable
+                }.also {
+                    progressDialog.dismiss()
+                }
 
-       }
+            }
+
+            override fun onVerificationFailed(exception: FirebaseException) {
+                progressDialog.dismiss()
+                Toast.makeText(context, exception.localizedMessage, Toast.LENGTH_SHORT).show()
+            }
+
+
+        }
+        phoneAuthProvider.verifyPhoneNumber(
+            number,
+            60,
+            TimeUnit.SECONDS,
+            this.activity as AuthActivity,
+            callbacks
+        )
 
 
     }
@@ -99,17 +221,21 @@ class OtpFragment : Fragment() {
         mCounterDown = object : CountDownTimer(milli, 1000) {
 
             override fun onTick(millisUntilFinished: Long) {
-                timeLeft = millisUntilFinished
-                counterTv.isVisible = true
-                counterTv.text = "Seconds remaining: " + millisUntilFinished / 1000
-
+                if (mCounterDown != null) {
+                    timeLeft = millisUntilFinished
+                    counterTv?.isVisible = true
+                    counterTv?.text = "Seconds remaining: " + millisUntilFinished / 1000
+                }
 
                 //here you can have your logic to set text to edittext
             }
 
             override fun onFinish() {
-                resendBtn.isEnabled = true
-                counterTv.isVisible = false
+                if (resendBtn != null) {
+                    resendBtn.isVisible = true
+                    resendBtn.isEnabled = true
+                }
+                counterTv?.isVisible = false
             }
         }.start()
 
@@ -128,14 +254,32 @@ class OtpFragment : Fragment() {
             }
         }
 
-        span.setSpan(clickSpan, span.length - 13, span.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        span.setSpan(clickSpan, span.length - 14, span.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         waitingTv.movementMethod = LinkMovementMethod.getInstance()
         waitingTv.text = span
     }
 
     private fun showLoginActivity() {
-        findNavController().navigate(R.id.action_otpFragment_to_loginFragment)
+        mCounterDown?.let {
+            it.cancel()
+
+        }
+        mCounterDown = null
+        val navOptions = NavOptions.Builder()
+            .setPopUpTo(R.id.destination_to_pop, true)
+            .build()
+        findNavController().navigate(R.id.action_otpFragment_to_loginFragment, null, navOptions)
+
     }
 
+    override fun onDestroy() {
+        super.onDestroy();
+        mCounterDown?.let {
+            it.cancel()
+
+        }
+        // mCounterDown=null
+
+    }
 
 }

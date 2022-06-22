@@ -2,6 +2,8 @@ package com.saikalyandaroju.kotlinnews.di.modules
 
 import android.R
 import android.app.Application
+import android.content.Context
+import android.content.SharedPreferences
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
@@ -11,9 +13,11 @@ import com.saikalyandaroju.kotlinnews.model.repository.NewsRepository
 import com.saikalyandaroju.kotlinnews.model.source.local.ArticleDao
 import com.saikalyandaroju.kotlinnews.model.source.local.ArticleDatabase
 import com.saikalyandaroju.kotlinnews.model.source.remote.NewsApi
+import com.saikalyandaroju.kotlinnews.utils.Constants.Companion.SHARED_DB_KEY
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import javax.inject.Singleton
@@ -71,6 +75,12 @@ class AppModule {
     @Provides
     fun provideAdapter(requestManager: RequestManager): NewsAdapter {
         return NewsAdapter(requestManager)
+    }
+
+    @Singleton
+    @Provides
+    fun getPreference(@ApplicationContext context:Context):SharedPreferences{
+        return context.getSharedPreferences(SHARED_DB_KEY,Context.MODE_PRIVATE)
     }
 
 

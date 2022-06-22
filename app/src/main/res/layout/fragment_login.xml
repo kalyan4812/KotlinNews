@@ -43,7 +43,6 @@
         android:layout_gravity="center"
         android:layout_margin="20dp"
         android:gravity="center"
-        android:background="@drawable/login_input_bg"
         android:orientation="horizontal">
 
 

@@ -43,9 +43,10 @@ class ArticlesDaoTest {
 
     }
 
+
     @After
     fun tearDown() {
-        articleDatabase.close()
+     //   articleDatabase.close()
     }
 
 
@@ -62,9 +63,10 @@ class ArticlesDaoTest {
         } returns 1L
 
         coVerify {
-            articleDao.insertArticle(article) == 1L
+            articleDao.insertArticle(article)
 
         }
+
 
         coEvery {
             articleDao.deleteArticle(article)
