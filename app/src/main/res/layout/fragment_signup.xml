@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
         android:text="Profile Info"
-        android:textColor="@color/black"
+        android:textColor="@color/color_secondary"
         android:textSize="24sp"
         android:textStyle="bold" />
 
@@ -36,20 +36,24 @@
         android:clickable="true"
         android:focusable="true"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_launcher_background"
+        android:src="@drawable/ic_baseline_face_24"
         app:shapeAppearanceOverlay="@style/RoundedImageView" />
 
 
     <EditText
         android:id="@+id/nameEt"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/_40sdp"
         android:layout_gravity="center"
         android:layout_marginStart="30dp"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="30dp"
+        android:paddingStart="@dimen/_20sdp"
         android:hint="Type your name here"
+        android:textColorHint="@color/black"
+        android:background="@drawable/login_input_bg"
         android:imeActionLabel="Send"
+        app:background="@null"
         android:imeOptions="actionUnspecified"
         android:inputType="textPersonName"
         android:maxLines="1"
@@ -60,19 +64,24 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/nextBtn"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/_40sdp"
         android:layout_gravity="center"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/button_ripple_effect"
         android:enabled="false"
-        android:paddingStart="20dp"
-        android:paddingTop="10dp"
-        android:paddingEnd="20dp"
-        android:paddingBottom="10dp"
-        android:text="next"
-        android:textAllCaps="true"
+        android:gravity="center"
+        android:minWidth="@dimen/_100sdp"
+        android:elevation="@dimen/_15sdp"
+        android:text="Next"
+        android:textAllCaps="false"
         android:textColor="#fff"
-        android:textSize="18sp"
+        app:rippleColor="#33ffffff"
+        app:elevation="7dp"
+        app:strokeColor="@color/grey"
+        app:strokeWidth="1dp"
+        android:textSize="@dimen/_14ssp"
         android:textStyle="normal"
-        app:cornerRadius="5dp" />
+        app:backgroundTint="@null"
+        app:cornerRadius="5dp"/>
 
 </LinearLayout>

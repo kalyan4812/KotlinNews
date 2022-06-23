@@ -1,3 +1,9 @@
 package com.saikalyandaroju.kotlinnews.auth.model
 
-data class User constructor(val name:String, val imageUrl:String, val userId:String)
+import java.io.Serializable
+
+data class User (var name:String="", var imageUrl:String="", var imgPath:String="",var userId:String=""):Serializable{
+
+
+
+}

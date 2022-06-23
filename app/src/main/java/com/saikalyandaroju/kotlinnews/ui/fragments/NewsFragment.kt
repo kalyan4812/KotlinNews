@@ -15,6 +15,8 @@ import com.saikalyandaroju.kotlinnews.ui.viewmodel.NewsViewModel
 import com.saikalyandaroju.kotlinnews.utils.Network.NetworkResponseHandler
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_news.*
+import kotlinx.android.synthetic.main.shimmer_holder.*
+import kotlinx.android.synthetic.main.shimmer_holder.view.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -33,6 +35,7 @@ class NewsFragment : BaseFragment<NewsViewModel>() {
 
     override fun onViewReady(view: View?, savedStateInstance: Bundle?, arguments: Bundle?) {
         initRecyclerView(view)
+
         subscribeToObservers()
 
         newsAdapter.setOnClickListener(object : NewsAdapter.ClickListener {
@@ -51,7 +54,7 @@ class NewsFragment : BaseFragment<NewsViewModel>() {
 
 
     private fun subscribeToObservers() {
-        viewModel.breakingNewsresponse?.observe(viewLifecycleOwner, Observer { response ->
+        viewModel.breakingNewsresponse.observe(viewLifecycleOwner, Observer { response ->
 
             when (response) {
                 is NetworkResponseHandler.Success -> {
@@ -61,19 +64,30 @@ class NewsFragment : BaseFragment<NewsViewModel>() {
                     response.data?.let { newsresponse ->
                         newsAdapter.setList(newsresponse.articles)
                     }
+                    shimmerFrameLayout.stopShimmer()
+                    shimmerFrameLayout.setVisibility(View.GONE)
+                    shimmerFrameLayout.removeAllViews()
+
                 }
                 is NetworkResponseHandler.Error -> {
                     hideProgressBar()
                     response.message?.let {
                         Log.d(TAG, it)
                     }
+                    shimmerFrameLayout.stopShimmer()
+                    shimmerFrameLayout.setVisibility(View.GONE)
+                    shimmerFrameLayout.removeAllViews()
                 }
                 is NetworkResponseHandler.Loading -> {
                     showProgressBar()
+                    shimmerFrameLayout.startShimmer()
+                    shimmerFrameLayout.setVisibility(View.VISIBLE)
                 }
             }
 
         })
+
+
     }
 
     private fun showProgressBar() {

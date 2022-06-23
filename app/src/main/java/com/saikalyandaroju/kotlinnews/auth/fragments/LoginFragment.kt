@@ -71,7 +71,8 @@ class LoginFragment : Fragment() {
 
                                     putString("number", ccp.fullNumberWithPlus)
                                 }
-                                findNavController().navigate(R.id.action_loginFragment_to_otpFragment,bundle)
+
+                                findNavController()?.navigate(R.id.action_loginFragment_to_otpFragment,bundle)
 
                             }
 
@@ -86,6 +87,7 @@ class LoginFragment : Fragment() {
                     }
                     dialog.show()
                 } else {
+
                      Toast.makeText(context, "Please Enter a valid number", Toast.LENGTH_SHORT)
                         .show()
                 }

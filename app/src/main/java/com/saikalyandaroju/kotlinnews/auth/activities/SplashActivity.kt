@@ -1,16 +1,17 @@
 package com.saikalyandaroju.kotlinnews.auth.activities
 
-import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.saikalyandaroju.kotlinnews.R
 import com.saikalyandaroju.kotlinnews.ui.activities.MainActivity
 import com.saikalyandaroju.kotlinnews.utils.Constants.Companion.OTP_STEP
 import com.saikalyandaroju.kotlinnews.utils.Constants.Companion.PROFILE_STEP
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.activity_splash.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -21,7 +22,17 @@ class SplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
+
         setContentView(R.layout.activity_splash)
+
+        /*
+        * splashanimation.enableMergePathsForKitKatAndAbove(true)
+
+            splashanimation.animate();
+            splashanimation.playAnimation(); */
+
 
         val otp_step = sharedPreferences.getBoolean(OTP_STEP, false)
         val profile_step = sharedPreferences.getBoolean(PROFILE_STEP, false)
@@ -44,7 +55,7 @@ class SplashActivity : AppCompatActivity() {
     private fun naviagte(destination: DESTINATION) {
 
         var intent: Intent
-        intent= when (destination) {
+        intent = when (destination) {
 
             DESTINATION.AUTH_ACTIVITY -> {
                 Intent(this, AuthActivity::class.java)
@@ -58,10 +69,9 @@ class SplashActivity : AppCompatActivity() {
             }
 
             DESTINATION.MAIN_ACTIVITY -> {
-                 Intent(this, MainActivity::class.java)
+                Intent(this, MainActivity::class.java)
 
             }
-
 
 
         }
@@ -72,11 +82,7 @@ class SplashActivity : AppCompatActivity() {
 }
 
 
-enum class DESTINATION {
-    AUTH_ACTIVITY,
-    PROFILE_ACTIVITY,
-    MAIN_ACTIVITY
-}
+
 
 
 

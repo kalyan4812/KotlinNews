@@ -35,9 +35,15 @@ class NewsViewModel @Inject constructor(
 
     var isItemPresent = MutableLiveData<Boolean>()
 
+    var rowValue = MutableLiveData<Long>()
+
 
     fun getIsItemPresent(): LiveData<Boolean> {
         return isItemPresent
+    }
+
+    fun getRowValue(): LiveData<Long> {
+        return rowValue
     }
 
     init {
@@ -54,6 +60,7 @@ class NewsViewModel @Inject constructor(
         val response = newRepository.getBreakingNews(countryCode, breakingNewsPage)
 
         breakingNewsresponse.postValue(response)
+
 
     }
 
@@ -103,7 +110,7 @@ class NewsViewModel @Inject constructor(
     }
 //-------------------------------------------------------------------------------------------------
 
-    fun saveArticle(article: Article): Long {
+    fun saveArticle(article: Article){
 
 
         viewModelScope.launch {
@@ -114,11 +121,13 @@ class NewsViewModel @Inject constructor(
             } else {
                 isItemPresent.postValue(false)
             }
+            rowValue.postValue(id)
 
 
         }
 
-        return 0
+
+
 
 
     }

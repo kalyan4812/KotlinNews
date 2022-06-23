@@ -189,11 +189,15 @@ class OtpFragment : Fragment() {
 
             override fun onVerificationCompleted(s: PhoneAuthCredential) {
                 val code = s.smsCode
-                code?.let {
-                    sentcodeEt.text = it as Editable
-                }.also {
+
+                if (code != null) {
+                    val c = java.lang.StringBuilder()
+                    c.append(code)
+                    sentcodeEt.text.clear()
+                    sentcodeEt.text.append(c)
                     progressDialog.dismiss()
                 }
+
 
             }
 

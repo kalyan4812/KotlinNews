@@ -23,6 +23,7 @@ class Constants {
         const val U_PROFILEPIC="upic"
         const val OTP_STEP="completed_otp_step"
         const val PROFILE_STEP="completed_profile_step"
+        const val NEW_USER="new_user"
 
     }
 }

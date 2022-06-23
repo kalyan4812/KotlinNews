@@ -5,7 +5,6 @@ import android.app.ProgressDialog
 import android.content.ContentResolver
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
@@ -18,11 +17,10 @@ import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.annotation.Nullable
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import com.bumptech.glide.RequestManager
+import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.gms.tasks.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
@@ -31,13 +29,12 @@ import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.StorageTask
 import com.google.firebase.storage.UploadTask
 import com.saikalyandaroju.kotlinnews.R
-import com.saikalyandaroju.kotlinnews.model.adapters.NewsAdapter
-import com.saikalyandaroju.kotlinnews.model.source.models.Article
-import com.saikalyandaroju.kotlinnews.ui.activities.MainActivity
+import com.saikalyandaroju.kotlinnews.auth.model.User
 import com.saikalyandaroju.kotlinnews.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_signup.*
-import kotlinx.android.synthetic.main.item_article.view.*
+import okhttp3.internal.wait
+import java.lang.StringBuilder
 import javax.inject.Inject
 
 
@@ -62,9 +59,7 @@ class SignupFragment : Fragment() {
     private lateinit var storageTask: StorageTask<*>
     private lateinit var downloadurl: String
     private lateinit var progressDialog: ProgressDialog
-
-
-    private lateinit var isReadyToNavigate: MutableLiveData<Boolean>
+    private lateinit var imagePath: String
 
 
     override fun onCreateView(
@@ -78,9 +73,55 @@ class SignupFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         editor = sharedPreferences.edit()
-        isReadyToNavigate = MutableLiveData()
+
         inits()
+
+        checkAlreadyRegisteredUser()
         setUpListeners()
+    }
+
+    private fun checkAlreadyRegisteredUser() {
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user != null) {
+            val userId = user.uid
+            firebaseFirestore.collection("Users").document(userId).get().addOnSuccessListener {
+
+                if (it.exists()) {
+
+                    editor.putBoolean(Constants.NEW_USER, false).commit()
+                    val f_user = it.toObject(User::class.java)
+                    if (f_user != null) {
+                        updateUI(f_user)
+                    }
+
+                } else {
+                    editor.putBoolean(Constants.NEW_USER, true).commit()
+                }
+
+            }.addOnCompleteListener {
+
+            }.addOnFailureListener {
+
+                editor.putBoolean(Constants.NEW_USER, true).commit()
+            }
+
+        }
+    }
+
+    private fun updateUI(user: User) {
+        val x: StringBuilder = StringBuilder()
+        x.append(user.name)
+        nameEt.text.clear()
+        nameEt.text.append(x)
+
+        requestManager.load(user.imgPath).centerCrop().fitCenter()
+            .placeholder(R.drawable.ic_baseline_face_24)
+            .error(R.drawable.ic_baseline_face_24)
+            .into(userImgView)
+
+        editor.putString(Constants.U_PROFILEPIC, user.imgPath).commit()
+        editor.putString(Constants.U_NAME, user.name).commit()
+
     }
 
     private fun inits() {
@@ -91,10 +132,11 @@ class SignupFragment : Fragment() {
                         + '/' + getResources().getResourceTypeName(R.drawable.ic_launcher_background)
                         + '/' + getResources().getResourceEntryName(R.drawable.ic_launcher_background)
             ).toString();
+        imagePath = downloadurl
         storageReference =
             com.google.firebase.storage.FirebaseStorage.getInstance().getReference("uploads");
         firebaseFirestore = FirebaseFirestore.getInstance();
-        progressDialog = createDialog("uploading the photo....", false)
+        progressDialog = createDialog("Please wait....", false)
     }
 
     private fun setUpListeners() {
@@ -128,15 +170,15 @@ class SignupFragment : Fragment() {
 
                 val user = com.saikalyandaroju.kotlinnews.auth.model.User(
                     uname,
-                    downloadurl,
+                    downloadurl, imagePath,
                     FirebaseAuth.getInstance().uid.toString()
                 )
-                firebaseFirestore.collection("Users")
+                firebaseFirestore.collection("Users/")
                     .document(FirebaseAuth.getInstance().uid.toString()).set(user)
                     .addOnSuccessListener(
                         OnSuccessListener<Void?> {
 
-                            navigate(uname, downloadurl)
+                            navigate(uname, imagePath)
 
                         })
                     .addOnFailureListener(OnFailureListener { e ->
@@ -154,16 +196,34 @@ class SignupFragment : Fragment() {
         editor.putString(Constants.U_PROFILEPIC, downloadurl).commit()
         editor.putBoolean(Constants.PROFILE_STEP, true).commit()
         progressDialog.dismiss()
-        findNavController().navigate(R.id.auth_nav_graph)
-        activity?.finish()
+
+        if (sharedPreferences.getBoolean(Constants.NEW_USER, false)) {
+            findNavController().navigate(R.id.action_signupFragment_to_onBoardFragment)
+        } else {
+            findNavController().navigate(R.id.action_signupFragment_to_mainActivity)
+        }
+
+
     }
 
 
     private fun choosephoto(v: View) {
-        val i = Intent()
-        i.type = "image/*"
-        i.action = Intent.ACTION_GET_CONTENT
-        startActivityForResult(i, 100)
+        ImagePicker.with(this)
+            .cropSquare() //Crop image(Optional), Check Customization for more option
+            .compress(1024) //Final image size will be less than 1 MB(Optional)
+            .maxResultSize(
+                1080,
+                1080
+            ) //Final image resolution will be less than 1080 x 1080(Optional)
+            //.saveDir(new File(Environment.getExternalStorageDirectory(), "CricFrik"))
+            .galleryMimeTypes(
+                arrayOf(
+                    "image/png",
+                    "image/jpg",
+                    "image/jpeg"
+                )
+            )
+            .start()
     }
 
     override fun onActivityResult(
@@ -172,8 +232,10 @@ class SignupFragment : Fragment() {
         @Nullable data: Intent?
     ) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 100 && resultCode == RESULT_OK && data != null && data.data != null) {
+        if (resultCode == RESULT_OK && data != null && data.data != null) {
             imageURi = data.data
+            imagePath = imageURi?.toString()!!
+            editor.putString(Constants.U_PROFILEPIC, imagePath).apply()
             Log.i("data", imageURi.toString())
 
             requestManager.load(imageURi).centerCrop().fitCenter()
@@ -181,11 +243,11 @@ class SignupFragment : Fragment() {
                 .error(R.drawable.placeholder)
                 .into(userImgView);
             progressDialog.show()
-            uploadImage(imageURi)
+            uploadImage(imageURi, imagePath)
         }
     }
 
-    private fun uploadImage(imageURi: Uri?) {
+    private fun uploadImage(imageURi: Uri?, imagePath: String) {
         if (imageURi != null) {
             val mstorageReference = storageReference.child(
                 System.currentTimeMillis().toString() + "." + getFileExtension(imageURi)
@@ -202,6 +264,7 @@ class SignupFragment : Fragment() {
 
 
                     downloadurl = it.getResult().toString();
+                    editor.putString(Constants.U_PROFILEPIC, downloadurl).apply();
                     progressDialog.dismiss()
                     Toast.makeText(context, "Sucessfully uploaded the image", Toast.LENGTH_SHORT)
                         .show()

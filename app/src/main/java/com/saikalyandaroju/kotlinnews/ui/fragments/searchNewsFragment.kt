@@ -17,6 +17,8 @@ import com.saikalyandaroju.kotlinnews.utils.Network.NetworkResponseHandler
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_news.paginationProgressBar
 import kotlinx.android.synthetic.main.fragment_search_news.*
+import kotlinx.android.synthetic.main.shimmer_holder.*
+import kotlinx.android.synthetic.main.shimmer_holder.view.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
@@ -26,8 +28,9 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class searchNewsFragment : BaseFragment<NewsViewModel>() {
     private val TAG = "searchNewsFragment"
+
     @Inject
-    lateinit var newsAdapter:NewsAdapter
+    lateinit var newsAdapter: NewsAdapter
     val viewModel: NewsViewModel by viewModels()
 
     override fun getLayoutId(): Int {
@@ -35,20 +38,26 @@ class searchNewsFragment : BaseFragment<NewsViewModel>() {
     }
 
     override fun onViewReady(view: View?, savedStateInstance: Bundle?, arguments: Bundle?) {
+        holder.shimmerFrameLayout.startShimmer()
+        holder.shimmerFrameLayout.setVisibility(View.VISIBLE)
+
         initRecyclerView(view)
 
         enhancedSearch()
 
         subscribeToObservers()
 
-        newsAdapter.setOnClickListener(object:NewsAdapter.ClickListener{
+        newsAdapter.setOnClickListener(object : NewsAdapter.ClickListener {
             override fun onClick(article: Article?) {
-                val bundle=Bundle()
+                val bundle = Bundle()
                 bundle.apply {
-                    putSerializable("article",article)
+                    putSerializable("article", article)
                 }
 
-                findNavController().navigate(R.id.action_searchNewsFragment_to_articleFragment,bundle)
+                findNavController().navigate(
+                    R.id.action_searchNewsFragment_to_articleFragment,
+                    bundle
+                )
             }
 
         })
@@ -75,7 +84,7 @@ class searchNewsFragment : BaseFragment<NewsViewModel>() {
     }
 
     private fun subscribeToObservers() {
-        viewModel.searchNewsresponse?.observe(viewLifecycleOwner, Observer { response ->
+        viewModel.searchNewsresponse.observe(viewLifecycleOwner, Observer { response ->
 
             when (response) {
                 is NetworkResponseHandler.Success -> {
@@ -98,6 +107,9 @@ class searchNewsFragment : BaseFragment<NewsViewModel>() {
             }
 
         })
+
+        holder.shimmerFrameLayout.stopShimmer()
+        holder.shimmerFrameLayout.setVisibility(View.GONE)
     }
 
     private fun showProgressBar() {

@@ -3,17 +3,20 @@ package com.saikalyandaroju.kotlinnews.ui.fragments
 import android.os.Bundle
 import android.view.View
 import android.webkit.WebViewClient
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.EventListener
+import com.google.firebase.firestore.FirebaseFirestore
 import com.saikalyandaroju.kotlinnews.R
-import com.saikalyandaroju.kotlinnews.utils.baseclasses.BaseFragment
 import com.saikalyandaroju.kotlinnews.model.source.models.Article
 import com.saikalyandaroju.kotlinnews.ui.viewmodel.NewsViewModel
+import com.saikalyandaroju.kotlinnews.utils.baseclasses.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_article.*
+import kotlinx.android.synthetic.main.fragment_news.*
 
 
 @AndroidEntryPoint
@@ -23,14 +26,17 @@ class ArticleFragment : BaseFragment<NewsViewModel>() {
 
     val viewModel: NewsViewModel by viewModels()
 
+    private var count: Long = 0
+
     override fun getLayoutId(): Int {
         return R.layout.fragment_article
     }
 
 
     override fun onViewReady(view: View?, savedStateInstance: Bundle?, arguments: Bundle?) {
+        count = 0
 
-
+        showProgressBar()
         val article = args.article
 
         setUpWebView(article)
@@ -49,6 +55,15 @@ class ArticleFragment : BaseFragment<NewsViewModel>() {
 
     }
 
+    private fun showProgressBar() {
+        articleProgressBar.visibility = View.VISIBLE
+    }
+
+    private fun hideProgressBar() {
+        articleProgressBar.visibility = View.INVISIBLE
+    }
+
+
     private fun setUpListeners(article: Article) {
         fab.setOnClickListener {
 
@@ -56,6 +71,33 @@ class ArticleFragment : BaseFragment<NewsViewModel>() {
 
 
         }
+
+        FirebaseFirestore.getInstance().collection("userArticleCount")
+            .document(FirebaseAuth.getInstance().getUid().toString()).get().addOnSuccessListener {
+                if (it.exists()) {
+
+                    val long: Long = it.get("key") as Long
+                    count = long
+                    println(count.toString() + "count value......................")
+                    saveCount(count + 1)
+                } else {
+                    saveCount(count + 1)
+                }
+            }
+
+
+    }
+
+    private fun saveCount(l: Long) {
+        val map = HashMap<String, Long>()
+        map.put("key", l)
+        FirebaseFirestore.getInstance().collection("userArticleCount")
+            .document(FirebaseAuth.getInstance().getUid().toString())
+            .set(map).addOnSuccessListener {
+                println("successssssss......................")
+            }.addOnFailureListener {
+                println(it.localizedMessage)
+            }
     }
 
     private fun setUpWebView(article: Article) {
@@ -64,7 +106,7 @@ class ArticleFragment : BaseFragment<NewsViewModel>() {
             webViewClient = WebViewClient()
             loadUrl(article.url)
         }
-
+        hideProgressBar()
     }
 
 }

@@ -19,9 +19,7 @@ class AuthActivity : AppCompatActivity() {
         getInfo()
 
 
-
     }
-
 
 
     private fun getInfo() {

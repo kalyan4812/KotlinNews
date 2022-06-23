@@ -1,13 +1,18 @@
 package com.saikalyandaroju.kotlinnews.model.source.local
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
+import com.google.common.truth.Truth
+import com.saikalyandaroju.kotlinnews.MainCoroutineRule
 import com.saikalyandaroju.kotlinnews.Utils.getOrAwaitValue
 import com.saikalyandaroju.kotlinnews.model.source.models.Article
 import com.saikalyandaroju.kotlinnews.model.source.models.Source
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Before
@@ -20,9 +25,10 @@ import org.junit.runner.RunWith
 @SmallTest
 class ArticlesDaoTest {
 
+
     @get:Rule
-    var rule =
-        InstantTaskExecutorRule() // tells junit to execute one function after another,not asynchronously.
+    val rule = InstantTaskExecutorRule()
+
 
 
     private lateinit var articleDao: ArticleDao
@@ -30,12 +36,14 @@ class ArticlesDaoTest {
 
     //MockK includes a rule which uses this to set up and tear
     // down your mocks without needing to manually call
- //   @get:Rule
-   // val mockkRule = MockKRule(this)
+    //   @get:Rule
+    // val mockkRule = MockKRule(this)
 
     @Before
     fun setUp() {
-        MockKAnnotations.init(this, relaxUnitFun = true)
+        unmockkAll()
+        clearAllMocks()
+        MockKAnnotations.init(this)
         articleDatabase = mockk()
         articleDao = mockk()
         every { articleDatabase.getArticleDao() } returns articleDao
@@ -46,12 +54,12 @@ class ArticlesDaoTest {
 
     @After
     fun tearDown() {
-     //   articleDatabase.close()
+        // articleDatabase.close()
     }
 
 
     @Test
-    fun test_article_insert_delete()= runBlockingTest {
+    fun test_article_insert_delete() = runBlockingTest {
 
 
         val article: Article = mockk()
@@ -62,10 +70,8 @@ class ArticlesDaoTest {
             articleDao.insertArticle(article)
         } returns 1L
 
-        coVerify {
-            articleDao.insertArticle(article)
-
-        }
+        val ans = articleDao.insertArticle(article)
+        Truth.assertThat(ans).isEqualTo(1L)
 
 
         coEvery {
@@ -76,7 +82,7 @@ class ArticlesDaoTest {
     }
 
     @Test
-    fun test_read_article()= runBlockingTest {
+    fun test_read_article() = runBlockingTest {
 
         val source = Source("India news", "India news")
         val article = Article(
@@ -89,15 +95,17 @@ class ArticlesDaoTest {
             "http//:url",
             "http//:urlimage"
         )
+        val list = MutableLiveData<List<Article>>(listOf(article))
         coEvery {
-            articleDao.getAllArticles().getOrAwaitValue()
-        } returns listOf(article)
+            articleDao.getAllArticles()
+        } returns list
 
-        coVerify {
-            val list = articleDao.getAllArticles().getOrAwaitValue()
-            list.contains(article)
-            list.size == 1
-        }
+
+        val res = articleDao.getAllArticles().getOrAwaitValue()
+
+        Truth.assertThat(res).contains(article)
+        Truth.assertThat(res.size).isEqualTo(1)
+
 
     }
 

@@ -1,6 +1,8 @@
 package com.saikalyandaroju.kotlinnews.model.repository
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.google.common.truth.Truth
 import com.saikalyandaroju.kotlinnews.MainCoroutineRule
 import com.saikalyandaroju.kotlinnews.model.source.models.Article
@@ -71,30 +73,46 @@ class TestRepository {
 
 
     @Test
-    fun test_insert_delete()= runBlockingTest {
+    fun test_insert_delete() = runBlockingTest {
         val article = mockk<Article>()
         coEvery {
             repository.insertArticle(article)
 
         } returns 1L
 
-        val res=repository.insertArticle(article)
+        val res = repository.insertArticle(article)
 
         Truth.assertThat(res).isEqualTo(1L)
 
-         coEvery {
-             repository.deleteArticle(article)
-         }  just runs
+        coEvery {
+            repository.deleteArticle(article)
+        } just runs
 
 
     }
 
     @Test
-    fun test_read()= runBlockingTest{
-        val article = mockk<Article>()
+    fun test_read() = runBlockingTest {
+        val source = Source("India news", "India news")
+        val article = Article(
+            "kalyan",
+            "hello...",
+            "message",
+            "india news",
+            source,
+            "Breaking news",
+            "http//:url",
+            "http//:urlimage"
+        )
+        val live = MutableLiveData<List<Article>>(listOf(article))
         coEvery {
-            repository.getSavedNews().getOrAwaitValueTest()
-        } returns listOf(article)
+            repository.getSavedNews()
+        } returns live
+
+        val res = repository.getSavedNews().getOrAwaitValueTest()
+
+        Truth.assertThat(res).isEqualTo(live.value)
+        Truth.assertThat(res.size).isEqualTo(live.value?.size)
 
 
     }

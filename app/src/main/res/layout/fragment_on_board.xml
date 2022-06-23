@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".auth.fragments.OnBoardFragment">
+
+    <com.denzcoskun.imageslider.ImageSlider
+        android:id="@+id/imageSlider"
+        android:layout_width="@dimen/_250sdp"
+        android:textAlignment="center"
+        app:iss_placeholder="@drawable/image"
+        android:background="@drawable/image"
+        android:backgroundTint="@color/white"
+        app:iss_error_image="@drawable/image"
+        android:layout_height="@dimen/_250sdp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_50sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
+        app:iss_text_align="CENTER"
+        app:iss_auto_cycle="true"
+        app:iss_delay="0"
+        app:iss_period="1000"
+        app:iss_selected_dot="@drawable/selected_dot" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
+        android:gravity="center"
+        android:lines="2"
+        android:visibility="gone"
+        android:text="Meet like minded sports fan"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_16ssp" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
+        android:gravity="center"
+        android:inputType="textMultiLine"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:lines="5"
+        android:text="Away from the chaos and noise of traditional social media platforms, we discuss, debate, and cheer our favorite sport here in family-like small communities"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_12ssp" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/skip"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_40sdp"
+        android:layout_marginStart="@dimen/_31sdp"
+        android:layout_marginTop="@dimen/_31sdp"
+        android:layout_marginEnd="@dimen/_31sdp"
+        android:layout_marginBottom="@dimen/_20sdp"
+        android:background="@drawable/button_ripple_effect"
+        android:elevation="7dp"
+        android:minHeight="80dp"
+        android:text="Skip"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_14ssp"
+        app:backgroundTint="@null"
+        app:rippleColor="#33ffffff" />
+
+
+</LinearLayout>

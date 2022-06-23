@@ -17,6 +17,7 @@ import com.saikalyandaroju.kotlinnews.model.source.models.Article
 import com.saikalyandaroju.kotlinnews.ui.viewmodel.NewsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_save_news.*
+import kotlinx.android.synthetic.main.shimmer_holder.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -33,12 +34,16 @@ class saveNewsFragment : BaseFragment<NewsViewModel>() {
     }
 
     override fun onViewReady(view: View?, savedStateInstance: Bundle?, arguments: Bundle?) {
+        shimmerFrameLayout.startShimmer()
+        shimmerFrameLayout.setVisibility(View.VISIBLE)
         initSwiper(view);
         initRecyclerView(view)
 
         setUpListeners()
 
         subscribeToObservers()
+
+
 
 
     }
@@ -93,10 +98,11 @@ class saveNewsFragment : BaseFragment<NewsViewModel>() {
 
                         c.drawBitmap(
                             bitmap,
-                            view.left.toFloat(),
+                            view.right.toFloat()-bitmap.width.toFloat(),
                             view.top.toFloat() + (view.bottom.toFloat() - view.top.toFloat() - bitmap.height.toFloat()) / 2,
                             p
                         )
+
                     } else {
                         bitmap =
                             BitmapFactory.decodeResource(resources, R.drawable.ic_delete_white_png)
@@ -109,7 +115,7 @@ class saveNewsFragment : BaseFragment<NewsViewModel>() {
                         c.drawBitmap(
                             bitmap,
                             view.left.toFloat(),
-                            view.top.toFloat() + (view.bottom.toFloat() - view.top.toFloat() - bitmap.height) / 2,
+                            view.top.toFloat() + (view.bottom.toFloat() - view.top.toFloat() - bitmap.height.toFloat()) / 2,
                             p
                         )
                     }
@@ -134,11 +140,13 @@ class saveNewsFragment : BaseFragment<NewsViewModel>() {
     }
 
     private fun subscribeToObservers() {
-        viewModel.getSavedNews()?.observe(viewLifecycleOwner, Observer { articles ->
+        viewModel.getSavedNews().observe(viewLifecycleOwner, Observer { articles ->
 
             newsAdapter.setList(articles as List<Article>)
 
         })
+        shimmerFrameLayout.stopShimmer()
+        shimmerFrameLayout.setVisibility(View.GONE)
     }
 
     private fun setUpListeners() {

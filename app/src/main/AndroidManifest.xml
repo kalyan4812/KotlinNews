@@ -13,7 +13,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.KotlinNews">
-        <activity android:name=".auth.activities.SplashActivity">
+        <activity android:name=".auth.activities.SplashActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,7 +25,13 @@
         <activity android:name=".auth.activities.AuthActivity">
 
         </activity>
-        <activity android:name=".ui.activities.MainActivity"></activity>
+        <activity
+            android:name=".ui.activities.MainActivity"
+            android:windowSoftInputMode="adjustPan" />
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

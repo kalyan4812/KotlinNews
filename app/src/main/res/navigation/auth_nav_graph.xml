@@ -21,7 +21,17 @@
         android:id="@+id/signupFragment"
         android:name="com.saikalyandaroju.kotlinnews.auth.fragments.SignupFragment"
         android:label="fragment_signup"
-        tools:layout="@layout/fragment_signup" />
+        tools:layout="@layout/fragment_signup" >
+        <action
+            android:id="@+id/action_signupFragment_to_newsFragment2"
+            app:destination="@id/newsFragment2" />
+        <action
+            android:id="@+id/action_signupFragment_to_onBoardFragment"
+            app:destination="@id/onBoardFragment" />
+        <action
+            android:id="@+id/action_signupFragment_to_mainActivity"
+            app:destination="@id/mainActivity" />
+    </fragment>
     <fragment
         android:id="@+id/otpFragment"
         android:name="com.saikalyandaroju.kotlinnews.auth.fragments.OtpFragment"
@@ -38,4 +48,22 @@
             android:id="@+id/action_otpFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/newsFragment2"
+        android:name="com.saikalyandaroju.kotlinnews.ui.fragments.NewsFragment"
+        android:label="NewsFragment" />
+    <fragment
+        android:id="@+id/onBoardFragment"
+        android:name="com.saikalyandaroju.kotlinnews.auth.fragments.OnBoardFragment"
+        android:label="fragment_on_board"
+        tools:layout="@layout/fragment_on_board" >
+        <action
+            android:id="@+id/action_onBoardFragment_to_mainActivity"
+            app:destination="@id/mainActivity" />
+    </fragment>
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="com.saikalyandaroju.kotlinnews.ui.activities.MainActivity"
+        android:label="activity_main"
+        tools:layout="@layout/activity_main" />
 </navigation>
