@@ -32,6 +32,7 @@ import com.saikalyandaroju.kotlinnews.R
 import com.saikalyandaroju.kotlinnews.auth.model.User
 import com.saikalyandaroju.kotlinnews.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
+import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_signup.*
 import okhttp3.internal.wait
 import java.lang.StringBuilder
@@ -163,7 +164,7 @@ class SignupFragment : Fragment() {
             val uname: String = nameEt.getText().toString()
             if (uname.length == 0) {
                 progressDialog.dismiss()
-                Toast.makeText(getApplicationContext(), "Name can't be empty", Toast.LENGTH_SHORT)
+                Toasty.warning(getApplicationContext(), "Name can't be empty", Toast.LENGTH_SHORT)
                     .show()
             } else {
 
@@ -183,7 +184,7 @@ class SignupFragment : Fragment() {
                         })
                     .addOnFailureListener(OnFailureListener { e ->
                         progressDialog.dismiss()
-                        Toast.makeText(getApplicationContext(), "Error!", Toast.LENGTH_SHORT).show()
+                        Toasty.error(getApplicationContext(), "Error!", Toast.LENGTH_SHORT).show()
                         Log.d(TAG, e.toString())
                     })
             }
@@ -266,18 +267,18 @@ class SignupFragment : Fragment() {
                     downloadurl = it.getResult().toString();
                     editor.putString(Constants.U_PROFILEPIC, downloadurl).apply();
                     progressDialog.dismiss()
-                    Toast.makeText(context, "Sucessfully uploaded the image", Toast.LENGTH_SHORT)
+                    Toasty.success(requireContext(), "Sucessfully uploaded the image", Toast.LENGTH_SHORT)
                         .show()
                 }
             }.addOnFailureListener {
                 progressDialog.dismiss()
-                Toast.makeText(context, it?.localizedMessage, Toast.LENGTH_SHORT).show()
+                Toasty.error(requireContext(), it?.localizedMessage, Toast.LENGTH_SHORT).show()
 
             }
 
         } else {
             progressDialog.dismiss()
-            Toast.makeText(context, "Error in  uploading the image ", Toast.LENGTH_SHORT).show()
+            Toasty.error(requireContext(), "Error in  uploading the image ", Toast.LENGTH_SHORT).show()
 
         }
     }

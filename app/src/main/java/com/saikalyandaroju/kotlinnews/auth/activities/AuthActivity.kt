@@ -8,6 +8,7 @@ import androidx.navigation.findNavController
 import com.saikalyandaroju.kotlinnews.R
 import com.saikalyandaroju.kotlinnews.auth.fragments.SignupFragment
 import dagger.hilt.android.AndroidEntryPoint
+import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_auth.*
 
 @AndroidEntryPoint
@@ -27,7 +28,7 @@ class AuthActivity : AppCompatActivity() {
 
         if (info != null && info == "profile") {
             findNavController(R.id.authNavHostFragment).navigate(R.id.signupFragment)
-            Toast.makeText(
+            Toasty.info(
                 applicationContext,
                 "Registered user ,please fill the profile",
                 Toast.LENGTH_SHORT

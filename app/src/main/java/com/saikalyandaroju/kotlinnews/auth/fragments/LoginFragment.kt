@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.saikalyandaroju.kotlinnews.R
+import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_login.*
 
 
@@ -91,7 +92,7 @@ class LoginFragment : Fragment() {
                     dialog.show()
                 } else {
 
-                     Toast.makeText(context, "Please Enter a valid number", Toast.LENGTH_SHORT)
+                     Toasty.info(requireContext(), "Please Enter a valid number", Toast.LENGTH_SHORT)
                         .show()
                 }
 

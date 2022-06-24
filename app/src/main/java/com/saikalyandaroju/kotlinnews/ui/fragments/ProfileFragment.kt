@@ -36,6 +36,7 @@ import com.google.firebase.storage.UploadTask
 import com.saikalyandaroju.kotlinnews.R
 import com.saikalyandaroju.kotlinnews.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
+import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.fragment_news.*
 import kotlinx.android.synthetic.main.fragment_profile.*
@@ -174,15 +175,15 @@ class ProfileFragment : Fragment() {
             .document(FirebaseAuth.getInstance().uid.toString()).update("imgUrl", imgurl)
             .addOnSuccessListener {
                 hideProgressBar()
-                Toast.makeText(
-                    context,
+                Toasty.success(
+                    requireContext(),
                     "Profile Dp Updated succesfully...",
                     Toast.LENGTH_SHORT
                 ).show()
             }.addOnFailureListener {
                 hideProgressBar()
-                Toast.makeText(
-                    context,
+                Toasty.error(
+                    requireContext(),
                     "Failed to update..",
                     Toast.LENGTH_SHORT
                 ).show()
@@ -215,13 +216,14 @@ class ProfileFragment : Fragment() {
                 }
             }.addOnFailureListener {
                 hideProgressBar()
-                Toast.makeText(context, it?.localizedMessage, Toast.LENGTH_SHORT).show()
+                Toasty.info(requireContext(), it?.localizedMessage, Toast.LENGTH_SHORT).show()
 
             }
 
         } else {
             hideProgressBar()
-            Toast.makeText(context, "Error in  uploading the image ", Toast.LENGTH_SHORT).show()
+            Toasty.error(requireContext(), "Error in  uploading the image ", Toast.LENGTH_SHORT)
+                .show()
 
         }
     }
@@ -263,10 +265,10 @@ class ProfileFragment : Fragment() {
                 imageuri = data.data!!
             }
         } else if (resultCode == Activity.RESULT_CANCELED) {
-            Toast.makeText(getApplicationContext(), "Unable to pick the image.", Toast.LENGTH_SHORT)
+            Toasty.error(getApplicationContext(), "Unable to pick the image.", Toast.LENGTH_SHORT)
                 .show()
         } else {
-            Toast.makeText(getApplicationContext(), "Unable to pick the image.", Toast.LENGTH_SHORT)
+            Toasty.error(getApplicationContext(), "Unable to pick the image.", Toast.LENGTH_SHORT)
                 .show()
         }
     }

@@ -25,6 +25,7 @@ import com.saikalyandaroju.kotlinnews.R
 import com.saikalyandaroju.kotlinnews.auth.activities.AuthActivity
 import com.saikalyandaroju.kotlinnews.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
+import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_otp.*
 import kotlinx.android.synthetic.main.fragment_otp.view.*
 import java.util.concurrent.TimeUnit
@@ -85,15 +86,15 @@ class OtpFragment : Fragment() {
                                 editor.putString(Constants.U_NUMBER, number).commit()
                                 editor.putBoolean(Constants.OTP_STEP, true).commit()
                                 findNavController().navigate(R.id.action_otpFragment_to_signupFragment)
-                                Toast.makeText(
-                                    context,
+                                Toasty.success(
+                                    requireContext(),
                                     "Success",
                                     Toast.LENGTH_SHORT
                                 ).show()
                             } else {
                                 progressDialog.dismiss()
-                                Toast.makeText(
-                                    context,
+                                Toasty.info(
+                                    requireContext(),
                                     "Failed to Verify",
                                     Toast.LENGTH_SHORT
                                 ).show()
@@ -101,7 +102,7 @@ class OtpFragment : Fragment() {
                         }
                 } else {
                     progressDialog.dismiss()
-                    Toast.makeText(context, "otp should be a 6 digit number", Toast.LENGTH_SHORT)
+                    Toasty.warning(requireContext(), "otp should be a 6 digit number", Toast.LENGTH_SHORT)
                         .show()
                 }
             }
