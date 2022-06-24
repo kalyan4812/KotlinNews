@@ -30,7 +30,6 @@ class ArticlesDaoTest {
     val rule = InstantTaskExecutorRule()
 
 
-
     private lateinit var articleDao: ArticleDao
     private lateinit var articleDatabase: ArticleDatabase
 
@@ -47,14 +46,14 @@ class ArticlesDaoTest {
         articleDatabase = mockk()
         articleDao = mockk()
         every { articleDatabase.getArticleDao() } returns articleDao
-
+        every { articleDatabase.close() } just runs
 
     }
 
 
     @After
     fun tearDown() {
-        // articleDatabase.close()
+        articleDatabase.close()
     }
 
 

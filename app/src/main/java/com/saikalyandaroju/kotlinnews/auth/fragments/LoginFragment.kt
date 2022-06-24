@@ -71,9 +71,12 @@ class LoginFragment : Fragment() {
 
                                     putString("number", ccp.fullNumberWithPlus)
                                 }
-
-                                findNavController()?.navigate(R.id.action_loginFragment_to_otpFragment,bundle)
-
+                                view?.post {
+                                    findNavController().navigate(
+                                        R.id.action_loginFragment_to_otpFragment,
+                                        bundle
+                                    )
+                                }
                             }
 
                         })

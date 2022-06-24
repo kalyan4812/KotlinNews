@@ -60,11 +60,11 @@
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" >
         <action
-            android:id="@+id/action_profileFragment_to_loginFragment2"
-            app:destination="@id/loginFragment2" />
+            android:id="@+id/action_profileFragment_to_authActivity"
+            app:destination="@id/authActivity" />
     </fragment>
-    <fragment
-        android:id="@+id/loginFragment2"
-        android:name="com.saikalyandaroju.kotlinnews.auth.fragments.LoginFragment"
-        android:label="LoginFragment" />
+    <activity
+        android:id="@+id/authActivity"
+        android:name="com.saikalyandaroju.kotlinnews.auth.activities.AuthActivity"
+        android:label="AuthActivity" />
 </navigation>

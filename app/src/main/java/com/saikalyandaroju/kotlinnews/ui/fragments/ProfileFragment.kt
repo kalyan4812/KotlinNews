@@ -138,8 +138,8 @@ class ProfileFragment : Fragment() {
             openPicker(v)
         })
         logout.setOnClickListener {
-            editor.clear().apply()
-            findNavController().navigate(R.id.action_profileFragment_to_loginFragment2)
+            editor.clear().commit()
+            findNavController().navigate(R.id.action_profileFragment_to_authActivity)
         }
 
     }

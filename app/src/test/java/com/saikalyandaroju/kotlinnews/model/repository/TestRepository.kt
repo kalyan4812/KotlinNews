@@ -5,12 +5,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.common.truth.Truth
 import com.saikalyandaroju.kotlinnews.MainCoroutineRule
+import com.saikalyandaroju.kotlinnews.model.source.local.ArticleDao
 import com.saikalyandaroju.kotlinnews.model.source.models.Article
 import com.saikalyandaroju.kotlinnews.model.source.models.NewsResponse
 import com.saikalyandaroju.kotlinnews.model.source.models.Source
+import com.saikalyandaroju.kotlinnews.model.source.remote.NewsApi
 import com.saikalyandaroju.kotlinnews.utils.Network.NetworkResponseHandler
 import com.saikalyandaroju.kotlinnews.utils.getOrAwaitValueTest
+import com.squareup.okhttp.Response
 import io.mockk.*
+import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
@@ -25,6 +29,12 @@ class TestRepository {
 
     private lateinit var repository: NewsRepository
 
+    @MockK
+    private lateinit var articleDao: ArticleDao
+
+    @MockK
+    private lateinit var newsApi: NewsApi
+
     @get:Rule
     var rule =
         InstantTaskExecutorRule() // tells junit to execute one function after another,not asynchronously.
@@ -37,8 +47,10 @@ class TestRepository {
 
     @Before
     fun setUp() {
+        unmockkAll()
+        clearAllMocks()
         MockKAnnotations.init(this, relaxUnitFun = true)
-        repository = mockk()
+        repository = NewsRepository(articleDao,newsApi)
     }
 
     @Test
@@ -56,19 +68,21 @@ class TestRepository {
             "http//:urlimage"
         )
 
-        val res = NetworkResponseHandler.Success(NewsResponse(listOf(article), "success", 1))
+        val res =retrofit2.Response.success(NewsResponse(listOf(article), "success", 1))
 
         coEvery {
-            repository.getBreakingNews("us", 1)
+            newsApi.getBreakingNews("us", 1)
         } returns res
 
 
         val ans = repository.getBreakingNews("us", 1)
-
-
-        Truth.assertThat(ans).isEqualTo(res)
-        Truth.assertThat(res.data?.articles?.size).isEqualTo(ans.data?.articles?.size)
+        println(ans.data?.articles)
+        Truth.assertThat(ans.data?.articles).isEqualTo(res.body()?.articles)
+        Truth.assertThat(res.body()?.articles?.size).isEqualTo(ans.data?.articles?.size)
         Truth.assertThat(ans.data?.articles?.get(0)?.author).isEqualTo("kalyan")
+
+
+
     }
 
 
@@ -76,7 +90,7 @@ class TestRepository {
     fun test_insert_delete() = runBlockingTest {
         val article = mockk<Article>()
         coEvery {
-            repository.insertArticle(article)
+            articleDao.insertArticle(article)
 
         } returns 1L
 
@@ -106,7 +120,7 @@ class TestRepository {
         )
         val live = MutableLiveData<List<Article>>(listOf(article))
         coEvery {
-            repository.getSavedNews()
+            articleDao.getAllArticles()
         } returns live
 
         val res = repository.getSavedNews().getOrAwaitValueTest()

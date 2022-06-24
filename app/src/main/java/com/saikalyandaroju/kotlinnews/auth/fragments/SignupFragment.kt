@@ -55,7 +55,6 @@ class SignupFragment : Fragment() {
     private var imageURi: Uri? = null
     private lateinit var storageReference: StorageReference
     private lateinit var firebaseFirestore: FirebaseFirestore
-    private lateinit var documentReference: DocumentReference
     private lateinit var storageTask: StorageTask<*>
     private lateinit var downloadurl: String
     private lateinit var progressDialog: ProgressDialog
@@ -118,7 +117,8 @@ class SignupFragment : Fragment() {
             .placeholder(R.drawable.ic_baseline_face_24)
             .error(R.drawable.ic_baseline_face_24)
             .into(userImgView)
-
+        imagePath = user.imgPath
+        downloadurl = user.imageUrl
         editor.putString(Constants.U_PROFILEPIC, user.imgPath).commit()
         editor.putString(Constants.U_NAME, user.name).commit()
 
@@ -234,7 +234,7 @@ class SignupFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK && data != null && data.data != null) {
             imageURi = data.data
-            imagePath = imageURi?.toString()!!
+            imagePath = imageURi?.path.toString()
             editor.putString(Constants.U_PROFILEPIC, imagePath).apply()
             Log.i("data", imageURi.toString())
 

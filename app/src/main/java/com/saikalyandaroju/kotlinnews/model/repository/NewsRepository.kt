@@ -44,7 +44,7 @@ class NewsRepository(val articleDao: ArticleDao, val newsApi: NewsApi) : GlobalN
 
     override suspend fun insertArticle(article: Article): Long {
 
-        Log.i("check", articleDao.toString())
+       // Log.i("check", articleDao.toString())
 
         return articleDao.insertArticle(article)
     }
