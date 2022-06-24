@@ -11,5 +11,6 @@
     <string name="source">SOURCE</string>
     <string name="waiting_to_automatically_detect_an_sms_sent_to">Waiting to automatically detect an SMS sent to</string>
     <string name="quick_news">Quick News</string>
+    <string name="enter_mobile_number">Enter Mobile Number</string>
 
 </resources>

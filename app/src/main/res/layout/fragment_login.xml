@@ -65,6 +65,7 @@
             android:layout_weight="1"
             android:background="@drawable/flag_transparent"
             android:imeActionId="6"
+            android:hint="@string/enter_mobile_number"
             android:imeActionLabel="Send"
             android:imeOptions="actionUnspecified"
             android:inputType="phone"

@@ -69,7 +69,7 @@ class searchNewsFragment : BaseFragment<NewsViewModel>() {
         //
 
         var job: Job? = null
-
+        newsAdapter?.setList(listOf())
         etSearch.addTextChangedListener { query ->
             job?.cancel()   // whenever we type something cancel our current job.
             job = MainScope().launch {
@@ -77,6 +77,9 @@ class searchNewsFragment : BaseFragment<NewsViewModel>() {
                 query?.let {
                     if (query.toString().isNotEmpty()) {
                         viewModel.getSearchNews(query.toString())
+                    }
+                    else{
+                        newsAdapter.setList(listOf())
                     }
                 }
             }

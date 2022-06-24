@@ -27,11 +27,10 @@ class SplashActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_splash)
 
-        /*
-        * splashanimation.enableMergePathsForKitKatAndAbove(true)
+        splashanimation.enableMergePathsForKitKatAndAbove(true)
 
             splashanimation.animate();
-            splashanimation.playAnimation(); */
+            splashanimation.playAnimation();
 
 
         val otp_step = sharedPreferences.getBoolean(OTP_STEP, false)

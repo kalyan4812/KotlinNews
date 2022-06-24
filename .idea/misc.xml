@@ -5,6 +5,7 @@
       <map>
         <entry key="app/src/main/res/drawable/button_ripple_effect.xml" value="0.122" />
         <entry key="app/src/main/res/drawable/chat_input_bg.xml" value="0.1495" />
+        <entry key="app/src/main/res/drawable/ic_baseline_camera_alt_24.xml" value="0.1495" />
         <entry key="app/src/main/res/drawable/ic_baseline_face_24.xml" value="0.122" />
         <entry key="app/src/main/res/drawable/ic_baseline_search_24.xml" value="0.148" />
         <entry key="app/src/main/res/drawable/ic_world.xml" value="0.1495" />
