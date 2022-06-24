@@ -10,6 +10,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import com.saikalyandaroju.kotlinnews.R
 import com.saikalyandaroju.kotlinnews.model.source.models.Article
 import com.saikalyandaroju.kotlinnews.ui.viewmodel.NewsViewModel
@@ -76,24 +77,24 @@ class ArticleFragment : BaseFragment<NewsViewModel>() {
             .document(FirebaseAuth.getInstance().getUid().toString()).get().addOnSuccessListener {
                 if (it.exists()) {
 
-                    val long: Long = it.get("key") as Long
-                    count = long
+                    val long = it?.data?.size
+                    count = long?.toLong()!!
                     println(count.toString() + "count value......................")
-                    saveCount(count + 1)
+                    saveCount(count + 1,article)
                 } else {
-                    saveCount(count + 1)
+                    saveCount(count + 1,article)
                 }
             }
 
 
     }
 
-    private fun saveCount(l: Long) {
-        val map = HashMap<String, Long>()
-        map.put("key", l)
+    private fun saveCount(l: Long,article: Article) {
+        val map = HashMap<String, String>()
+        map.put("key"+article.url,article.url)
         FirebaseFirestore.getInstance().collection("userArticleCount")
             .document(FirebaseAuth.getInstance().getUid().toString())
-            .set(map).addOnSuccessListener {
+            .set(map, SetOptions.merge()).addOnSuccessListener {
                 println("successssssss......................")
             }.addOnFailureListener {
                 println(it.localizedMessage)

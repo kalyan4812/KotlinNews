@@ -299,11 +299,13 @@ class ProfileFragment : Fragment() {
         ed_artcile_read_count?.text?.clear()
         ed_artcile_read_count?.text?.append(count)
 
+
+
         FirebaseFirestore.getInstance().collection("userArticleCount")
             .document(FirebaseAuth.getInstance().getUid().toString()).get().addOnSuccessListener {
                 if (it.exists()) {
 
-                    val long: Long = it.get("key") as Long
+                    val long = it?.data?.size
                     val count = StringBuilder()
                     count.append(long)
                     ed_artcile_read_count?.text?.clear()
