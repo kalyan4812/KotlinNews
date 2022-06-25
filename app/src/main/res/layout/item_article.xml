@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="200dp"
     android:layout_margin="10dp"
+    android:elevation="5dp"
     app:cardCornerRadius="15dp"
-    app:rippleColor="#dddddddd"
     app:cardElevation="5dp"
-    android:elevation="5dp">
+    app:rippleColor="#dddddddd">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -71,6 +71,20 @@
             android:textColor="@android:color/black"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvSource" />
+
+        <!---     <androidx.appcompat.widget.AppCompatImageView
+                 android:id="@+id/imageView"
+                 android:layout_width="30dp"
+                 android:layout_height="25dp"
+                 android:layout_marginTop="20dp"
+                 app:layout_constraintBottom_toBottomOf="parent"
+                 app:layout_constraintEnd_toEndOf="parent"
+                 app:layout_constraintHorizontal_bias="0.935"
+                 app:layout_constraintStart_toEndOf="@+id/tvPublishedAt"
+                 app:layout_constraintTop_toBottomOf="@+id/tvDescription"
+                 app:layout_constraintVertical_bias="1.0"
+                 app:srcCompat="@drawable/ic_baseline_share_24"
+                 app:tint="@color/color_secondary" />-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

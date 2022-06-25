@@ -50,6 +50,10 @@ class NewsFragment : BaseFragment<NewsViewModel>() {
 
         })
 
+        swiperefresh_layout.setOnRefreshListener {
+            viewModel.getBreakingNews("us")
+        }
+
     }
 
 
@@ -67,6 +71,7 @@ class NewsFragment : BaseFragment<NewsViewModel>() {
                     shimmerFrameLayout.stopShimmer()
                     shimmerFrameLayout.setVisibility(View.GONE)
                     shimmerFrameLayout.removeAllViews()
+                    swiperefresh_layout.isRefreshing=false
 
                 }
                 is NetworkResponseHandler.Error -> {
@@ -77,6 +82,7 @@ class NewsFragment : BaseFragment<NewsViewModel>() {
                     shimmerFrameLayout.stopShimmer()
                     shimmerFrameLayout.setVisibility(View.GONE)
                     shimmerFrameLayout.removeAllViews()
+                    swiperefresh_layout.isRefreshing=false
                 }
                 is NetworkResponseHandler.Loading -> {
                     showProgressBar()
@@ -86,7 +92,7 @@ class NewsFragment : BaseFragment<NewsViewModel>() {
             }
 
         })
-
+        swiperefresh_layout.isRefreshing=false
 
     }
 

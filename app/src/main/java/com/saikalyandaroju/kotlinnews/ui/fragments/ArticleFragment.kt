@@ -1,7 +1,9 @@
 package com.saikalyandaroju.kotlinnews.ui.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.view.animation.AnimationUtils
 import android.webkit.WebViewClient
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -70,6 +72,13 @@ class ArticleFragment : BaseFragment<NewsViewModel>() {
 
             viewModel.saveArticle(article)
 
+            fab.startAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.bubble))
+
+
+        }
+        share.setOnClickListener {
+            share.startAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.bubble))
+            shareNews(article)
 
         }
 
@@ -80,18 +89,37 @@ class ArticleFragment : BaseFragment<NewsViewModel>() {
                     val long = it?.data?.size
                     count = long?.toLong()!!
                     println(count.toString() + "count value......................")
-                    saveCount(count + 1,article)
+                    saveCount(count + 1, article)
                 } else {
-                    saveCount(count + 1,article)
+                    saveCount(count + 1, article)
                 }
             }
 
 
     }
 
-    private fun saveCount(l: Long,article: Article) {
+    private fun shareNews(article: Article) {
+
+
+        try {
+
+            val shareIntent = Intent(Intent.ACTION_SEND);
+            shareIntent.setType("text/plain");
+            shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Quick News");
+            var shareMessage = "\nLet me recommend you this article\n\n";
+            shareMessage = shareMessage + article.url + "\n\n";
+            shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+            startActivity(Intent.createChooser(shareIntent, "Share App"));
+        } catch (e: Exception) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    private fun saveCount(l: Long, article: Article) {
         val map = HashMap<String, String>()
-        map.put("key"+article.url,article.url)
+        map.put("key" + article.url, article.url)
         FirebaseFirestore.getInstance().collection("userArticleCount")
             .document(FirebaseAuth.getInstance().getUid().toString())
             .set(map, SetOptions.merge()).addOnSuccessListener {
