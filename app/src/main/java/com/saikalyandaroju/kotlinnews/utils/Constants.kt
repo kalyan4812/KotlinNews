@@ -3,7 +3,6 @@ package com.saikalyandaroju.kotlinnews.utils
 class Constants {
     companion object {
         const val BASE_URL: String = "https://newsapi.org"
-        const val QUERY_PAGE_SIZE: Int = 20
 
 
         const val PRAGMA_HEADER =
