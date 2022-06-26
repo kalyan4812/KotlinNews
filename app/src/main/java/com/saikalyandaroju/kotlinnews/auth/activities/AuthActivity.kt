@@ -36,4 +36,8 @@ class AuthActivity : AppCompatActivity() {
                 .show()
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+    }
 }

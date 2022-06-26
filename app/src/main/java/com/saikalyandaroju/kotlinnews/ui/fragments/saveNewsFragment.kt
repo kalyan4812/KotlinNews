@@ -176,4 +176,8 @@ class saveNewsFragment : BaseFragment<NewsViewModel>() {
        ItemTouchHelper(callback).attachToRecyclerView(rvSavedNews)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+    }
+
 }

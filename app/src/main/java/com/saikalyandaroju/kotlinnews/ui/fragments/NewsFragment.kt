@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,12 +12,14 @@ import com.saikalyandaroju.kotlinnews.R
 import com.saikalyandaroju.kotlinnews.model.adapters.NewsAdapter
 import com.saikalyandaroju.kotlinnews.utils.baseclasses.BaseFragment
 import com.saikalyandaroju.kotlinnews.model.source.models.Article
+import com.saikalyandaroju.kotlinnews.model.source.models.NewsResponse
 import com.saikalyandaroju.kotlinnews.ui.viewmodel.NewsViewModel
 import com.saikalyandaroju.kotlinnews.utils.Network.NetworkResponseHandler
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_news.*
 import kotlinx.android.synthetic.main.shimmer_holder.*
 import kotlinx.android.synthetic.main.shimmer_holder.view.*
+import java.lang.ref.WeakReference
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -26,7 +29,7 @@ class NewsFragment : BaseFragment<NewsViewModel>() {
     private val TAG = "NewsFragment"
 
     @Inject
-    lateinit var newsAdapter: NewsAdapter
+     lateinit var newsAdapter: NewsAdapter
 
 
     override fun getLayoutId(): Int {
@@ -71,7 +74,7 @@ class NewsFragment : BaseFragment<NewsViewModel>() {
                     shimmerFrameLayout.stopShimmer()
                     shimmerFrameLayout.setVisibility(View.GONE)
                     shimmerFrameLayout.removeAllViews()
-                    swiperefresh_layout.isRefreshing=false
+                    swiperefresh_layout.isRefreshing = false
 
                 }
                 is NetworkResponseHandler.Error -> {
@@ -82,7 +85,7 @@ class NewsFragment : BaseFragment<NewsViewModel>() {
                     shimmerFrameLayout.stopShimmer()
                     shimmerFrameLayout.setVisibility(View.GONE)
                     shimmerFrameLayout.removeAllViews()
-                    swiperefresh_layout.isRefreshing=false
+                    swiperefresh_layout.isRefreshing = false
                 }
                 is NetworkResponseHandler.Loading -> {
                     showProgressBar()
@@ -92,7 +95,7 @@ class NewsFragment : BaseFragment<NewsViewModel>() {
             }
 
         })
-        swiperefresh_layout.isRefreshing=false
+        swiperefresh_layout.isRefreshing = false
 
     }
 
@@ -113,5 +116,15 @@ class NewsFragment : BaseFragment<NewsViewModel>() {
 
 
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        swiperefresh_layout.removeAllViews()
+        swiperefresh_layout.removeAllViewsInLayout()
+
+
+    }
+
+
 
 }

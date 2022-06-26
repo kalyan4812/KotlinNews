@@ -54,6 +54,10 @@ class SplashActivity : AppCompatActivity() {
 
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+    }
+
     private fun naviagte(destination: DESTINATION) {
 
         var intent: Intent

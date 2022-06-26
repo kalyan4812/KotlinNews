@@ -176,6 +176,8 @@ dependencies {
     //toasty library for inbuilt toats.
     implementation 'com.github.GrenderG:Toasty:1.5.0'
 
+    //debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
+
 
 }
 kapt {

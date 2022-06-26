@@ -140,4 +140,8 @@ class NewsViewModel @Inject constructor(
         newRepository.getSavedNews()  // no need of couroutine,since it was not a suspend function.
     // we can observe live data in our fragments.
 
+    override fun onCleared() {
+        super.onCleared()
+    }
+
 }

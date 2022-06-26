@@ -102,7 +102,11 @@ class OtpFragment : Fragment() {
                         }
                 } else {
                     progressDialog.dismiss()
-                    Toasty.warning(requireContext(), "otp should be a 6 digit number", Toast.LENGTH_SHORT)
+                    Toasty.warning(
+                        requireContext(),
+                        "otp should be a 6 digit number",
+                        Toast.LENGTH_SHORT
+                    )
                         .show()
                 }
             }
@@ -285,6 +289,15 @@ class OtpFragment : Fragment() {
         }
         // mCounterDown=null
 
+    }
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mCounterDown?.let {
+            it.cancel()
+
+        }
     }
 
 }

@@ -50,4 +50,12 @@ abstract class BaseFragment<V : ViewModel> : Fragment() {
     }*/
 
     abstract fun onViewReady(view: View?, savedStateInstance: Bundle?, arguments: Bundle?)
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+    }
 }
