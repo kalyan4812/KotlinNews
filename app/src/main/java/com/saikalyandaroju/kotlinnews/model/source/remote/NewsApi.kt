@@ -1,7 +1,7 @@
 package com.saikalyandaroju.kotlinnews.model.source.remote
 
+import com.saikalyandaroju.kotlinnews.BuildConfig
 import com.saikalyandaroju.kotlinnews.model.source.models.NewsResponse
-import com.saikalyandaroju.kotlinnews.utils.Constants.Companion.API_KEY
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -16,7 +16,7 @@ interface NewsApi {
         @Query("page")
         pageNumber: Int = 1,
         @Query("apiKey")
-        apiKey: String = API_KEY
+        apiKey: String = BuildConfig.API_KEY
     ): Response<NewsResponse>
 
 
@@ -27,7 +27,7 @@ interface NewsApi {
         @Query("page")
         pageNumber: Int=1,
         @Query("apiKey")
-        apiKey: String= API_KEY
+        apiKey: String= BuildConfig.API_KEY
     ): Response<NewsResponse>
 
 
