@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">KotlinNews</string>
+    <string name="app_name">Quick News</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="search_news">Search For News</string>
@@ -12,5 +12,6 @@
     <string name="waiting_to_automatically_detect_an_sms_sent_to">Waiting to automatically detect an SMS sent to</string>
     <string name="quick_news">Quick News</string>
     <string name="enter_mobile_number">Enter Mobile Number</string>
+    <string name="Verification_Text">Proceed for verification of number ?</string>
 
 </resources>

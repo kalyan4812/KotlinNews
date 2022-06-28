@@ -6,7 +6,9 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.saikalyandaroju.kotlinnews.R
 import com.saikalyandaroju.kotlinnews.model.adapters.NewsAdapter
@@ -29,7 +31,7 @@ class NewsFragment : BaseFragment<NewsViewModel>() {
     private val TAG = "NewsFragment"
 
     @Inject
-     lateinit var newsAdapter: NewsAdapter
+    lateinit var newsAdapter: NewsAdapter
 
 
     override fun getLayoutId(): Int {
@@ -46,7 +48,10 @@ class NewsFragment : BaseFragment<NewsViewModel>() {
                 val bundle = Bundle()
                 bundle.apply {
                     putSerializable("article", article)
+
                 }
+
+
 
                 findNavController().navigate(R.id.action_newsFragment_to_articleFragment, bundle)
             }
@@ -124,7 +129,6 @@ class NewsFragment : BaseFragment<NewsViewModel>() {
 
 
     }
-
 
 
 }

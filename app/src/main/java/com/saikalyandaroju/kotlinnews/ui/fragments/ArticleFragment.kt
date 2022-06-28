@@ -29,6 +29,7 @@ class ArticleFragment : BaseFragment<NewsViewModel>() {
 
     val viewModel: NewsViewModel by viewModels()
 
+
     private var count: Long = 0
 
     override fun getLayoutId(): Int {

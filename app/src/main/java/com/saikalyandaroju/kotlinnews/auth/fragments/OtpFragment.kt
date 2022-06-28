@@ -287,8 +287,6 @@ class OtpFragment : Fragment() {
             it.cancel()
 
         }
-        // mCounterDown=null
-
     }
 
 

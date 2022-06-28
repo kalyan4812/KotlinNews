@@ -64,7 +64,7 @@ class LoginFragment : Fragment() {
 
                 if (ccp.isValidFullNumber) {
                     val dialog = MaterialAlertDialogBuilder(view.context).apply {
-                        setMessage("Proceed for verification of number ?")
+                        setMessage(getString(R.string.Verification_Text))
                         setPositiveButton("OK", object : DialogInterface.OnClickListener {
                             override fun onClick(dialog: DialogInterface, p1: Int) {
                                 val bundle = Bundle()

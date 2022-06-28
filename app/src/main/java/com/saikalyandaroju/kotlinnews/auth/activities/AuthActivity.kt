@@ -13,13 +13,14 @@ import kotlinx.android.synthetic.main.activity_auth.*
 
 @AndroidEntryPoint
 class AuthActivity : AppCompatActivity() {
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
 
+        // if user completed otp step ,then go to profile screen dircetly.
         getInfo()
-
-
     }
 
 

@@ -1,18 +1,15 @@
 package com.saikalyandaroju.kotlinnews.model.source.local
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.google.common.truth.Truth
-import com.saikalyandaroju.kotlinnews.MainCoroutineRule
 import com.saikalyandaroju.kotlinnews.Utils.getOrAwaitValue
 import com.saikalyandaroju.kotlinnews.model.source.models.Article
 import com.saikalyandaroju.kotlinnews.model.source.models.Source
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Before

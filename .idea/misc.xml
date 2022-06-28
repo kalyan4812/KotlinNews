@@ -38,6 +38,8 @@
         <entry key="app/src/main/res/layout/shimmer_holder.xml" value="0.19270833333333334" />
         <entry key="app/src/main/res/layout/shimmer_placeholder.xml" value="0.19270833333333334" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.19375" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1495" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1495" />
       </map>
     </option>
   </component>

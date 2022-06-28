@@ -2,7 +2,9 @@ package com.saikalyandaroju.kotlinnews.ui.activities
 
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
@@ -107,6 +109,12 @@ class MainActivity : AppCompatActivity() {
             .build()
             .show()
     }
+
+    override fun onPause() {
+        super.onPause()
+
+    }
+
 
     override fun onDestroy() {
         super.onDestroy()

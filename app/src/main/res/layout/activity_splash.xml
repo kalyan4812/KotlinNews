@@ -15,11 +15,12 @@
         android:layout_below="@+id/title"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
-        android:layout_marginTop="@dimen/_30sdp"
+        android:singleLine="true"
+        android:layout_marginTop="@dimen/_50sdp"
         android:fontFamily="@font/andikanew"
         android:text="Quick News"
         android:textColor="@android:color/white"
-        android:textSize="@dimen/_50ssp"
+        android:textSize="@dimen/_40ssp"
         android:textStyle="bold" />
 
     <com.airbnb.lottie.LottieAnimationView
@@ -28,6 +29,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         app:lottie_autoPlay="true"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:foregroundGravity="center"
         android:visibility="visible"
         app:lottie_enableMergePathsForKitKatAndAbove="true"
         app:lottie_loop="true"
