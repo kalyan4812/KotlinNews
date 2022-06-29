@@ -33,12 +33,11 @@ class NewsFragment : BaseFragment<NewsViewModel>() {
     val viewModel: NewsViewModel by viewModels()
     private val TAG = "NewsFragment"
 
-    @Inject
-    lateinit var newsAdapter: NewsAdapter
 
     @Inject
     lateinit var requestManager: RequestManager
 
+    @Inject
     lateinit var pagingAdapter: NewsPagingAdapter
 
 

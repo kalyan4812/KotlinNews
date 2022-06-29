@@ -63,7 +63,7 @@ class NewsViewModel @Inject constructor(
         breakingNewsresponse.postValue(NetworkResponseHandler.Loading())
 
 
-        //   val response =
+
         newRepository.getBreakingNews(countryCode, breakingNewsPage).observeForever {
             breakingNewsresponse.postValue(
                 handleNewsResponse(
@@ -86,50 +86,31 @@ class NewsViewModel @Inject constructor(
 
         return NetworkResponseHandler.Error(State.ERROR, null, null)
 
-
-        /*   if (response.isSuccessful) {
-
-               if (response.raw().networkResponse != null && response.raw().cacheResponse == null) {
-                   Log.i(TAG, "Response is from network.")
-                   println("Response is from network.")
-               } else if (response.raw().networkResponse == null && response.raw().cacheResponse != null) {
-                   Log.i(TAG, "Response is from cache.")
-                   println("Response is from cache.")
-               }
-
-               response.body()?.let { result ->
-                   Log.i("result", result.articles.toString())
-                   return NetworkResponseHandler.Success(result)
-               }
-
-           }
-
-           return NetworkResponseHandler.Error(State.ERROR,response.body(), null)*/
-
-
     }
 
 
-    val searchNewsresponse: MutableLiveData<NetworkResponseHandler<NewsResponse>> =
+    val searchNewsresponse: MutableLiveData<NetworkResponseHandler<PagingData<Article>>> =
         MutableLiveData()
 
     var searchNewsPage = 1
 
     fun getSearchNews(query: String) = viewModelScope.launch {
         searchNewsresponse.postValue(NetworkResponseHandler.Loading())
-        val response = newRepository.getSearchedNews(query, searchNewsPage)
-        searchNewsresponse.postValue(response)
+        newRepository.getSearchedNews(query, searchNewsPage).observeForever {
+            searchNewsresponse.postValue(handleSearchNewsResponse(it))
+        }
     }
 
-    private fun handleSearchNewsResponse(response: Response<NewsResponse>): NetworkResponseHandler<NewsResponse>? {
-        if (response.isSuccessful) {
-            response.body()?.let { result ->
-
-                return NetworkResponseHandler.Success(result)
-            }
+    private fun handleSearchNewsResponse(response: PagingData<Article>?):
+            NetworkResponseHandler<PagingData<Article>> {
+        println("response is  $response")
+        if (response != null) {
+            return NetworkResponseHandler.Success(response)
         }
 
-        return NetworkResponseHandler.Error(State.ERROR, response.body(), null)
+
+        return NetworkResponseHandler.Error(State.ERROR, null, null)
+
     }
 //-------------------------------------------------------------------------------------------------
 

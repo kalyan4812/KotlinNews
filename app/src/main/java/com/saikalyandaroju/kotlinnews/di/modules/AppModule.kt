@@ -8,6 +8,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
 import com.saikalyandaroju.kotlinnews.model.adapters.NewsAdapter
+import com.saikalyandaroju.kotlinnews.model.adapters.NewsPagingAdapter
 import com.saikalyandaroju.kotlinnews.model.repository.GlobalNewsRepository
 import com.saikalyandaroju.kotlinnews.model.repository.NewsRepository
 import com.saikalyandaroju.kotlinnews.model.source.local.ArticleDao
@@ -73,7 +74,13 @@ class AppModule {
 
     @Singleton
     @Provides
-    fun provideAdapter(requestManager: RequestManager): NewsAdapter {
+    fun providePagingAdapter(requestManager: RequestManager): NewsPagingAdapter {
+        return NewsPagingAdapter(requestManager)
+    }
+
+    @Singleton
+    @Provides
+    fun provideNormalAdapter(requestManager: RequestManager): NewsAdapter {
         return NewsAdapter(requestManager)
     }
 

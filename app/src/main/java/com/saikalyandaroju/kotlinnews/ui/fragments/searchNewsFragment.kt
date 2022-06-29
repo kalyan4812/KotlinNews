@@ -7,9 +7,11 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.saikalyandaroju.kotlinnews.R
 import com.saikalyandaroju.kotlinnews.model.adapters.NewsAdapter
+import com.saikalyandaroju.kotlinnews.model.adapters.NewsPagingAdapter
 import com.saikalyandaroju.kotlinnews.utils.baseclasses.BaseFragment
 import com.saikalyandaroju.kotlinnews.model.source.models.Article
 import com.saikalyandaroju.kotlinnews.ui.viewmodel.NewsViewModel
@@ -30,7 +32,8 @@ class searchNewsFragment : BaseFragment<NewsViewModel>() {
     private val TAG = "searchNewsFragment"
 
     @Inject
-    lateinit var newsAdapter: NewsAdapter
+    lateinit var pagingAdapter: NewsPagingAdapter
+
     val viewModel: NewsViewModel by viewModels()
 
     override fun getLayoutId(): Int {
@@ -47,7 +50,7 @@ class searchNewsFragment : BaseFragment<NewsViewModel>() {
 
         subscribeToObservers()
 
-        newsAdapter.setOnClickListener(object : NewsAdapter.ClickListener {
+        pagingAdapter.setOnClickListener(object : NewsPagingAdapter.ClickListener {
             override fun onClick(article: Article?) {
                 val bundle = Bundle()
                 bundle.apply {
@@ -69,7 +72,8 @@ class searchNewsFragment : BaseFragment<NewsViewModel>() {
         //
 
         var job: Job? = null
-        newsAdapter?.setList(listOf())
+
+
         etSearch.addTextChangedListener { query ->
             job?.cancel()   // whenever we type something cancel our current job.
             job = MainScope().launch {
@@ -77,9 +81,8 @@ class searchNewsFragment : BaseFragment<NewsViewModel>() {
                 query?.let {
                     if (query.toString().isNotEmpty()) {
                         viewModel.getSearchNews(query.toString())
-                    }
-                    else{
-                        newsAdapter.setList(listOf())
+                    } else {
+
                     }
                 }
             }
@@ -95,7 +98,7 @@ class searchNewsFragment : BaseFragment<NewsViewModel>() {
                     hideProgressBar()
 
                     response.data?.let { newsresponse ->
-                        newsAdapter.setList(newsresponse.articles)
+                        pagingAdapter.submitData(lifecycle, newsresponse)
                     }
                 }
                 is NetworkResponseHandler.Error -> {
@@ -126,7 +129,7 @@ class searchNewsFragment : BaseFragment<NewsViewModel>() {
     private fun initRecyclerView(view: View?) {
 
         rvSearchNews.apply {
-            adapter = newsAdapter
+            adapter = pagingAdapter
             layoutManager = LinearLayoutManager(activity)
         }
 

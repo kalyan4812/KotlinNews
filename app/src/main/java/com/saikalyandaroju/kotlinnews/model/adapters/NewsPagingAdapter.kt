@@ -39,7 +39,7 @@ class NewsPagingAdapter(var requestManager: RequestManager) :
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val article = getItem(position)!!
+        val article =getItem(position)!!
 
 
 
@@ -67,6 +67,18 @@ class NewsPagingAdapter(var requestManager: RequestManager) :
             })
         }
 
+    }
+
+    private val differ =
+        AsyncListDiffer(this, callback) // runs asynchronously,calculates diff b/w old and new list.
+
+
+    fun setList(articles: List<Article>) {
+        differ.submitList(articles)
+    }
+
+    fun getList(): List<Article> {
+        return differ.currentList
     }
 
 

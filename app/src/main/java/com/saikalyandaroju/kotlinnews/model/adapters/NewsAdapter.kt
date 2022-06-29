@@ -73,7 +73,7 @@ class NewsAdapter(var requestManager: RequestManager) :
 
             setOnClickListener(View.OnClickListener {
                 val pos = position
-                if (onClickListener != null && pos != -1) {
+                if (onClickListener != null && pos != -1 && pos<itemCount) {
                     onClickListener.onClick(differ.getCurrentList().get(pos));
                 }
             })

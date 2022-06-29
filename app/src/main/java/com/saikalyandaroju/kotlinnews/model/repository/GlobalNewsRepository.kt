@@ -13,7 +13,7 @@ interface GlobalNewsRepository {
     suspend fun getBreakingNews(countryCode: String, pagenumber: Int): LiveData<PagingData<Article>>
 
 
-    suspend fun getSearchedNews(query: String, pagenumber: Int): NetworkResponseHandler<NewsResponse>
+    suspend fun getSearchedNews(query: String, pagenumber: Int): LiveData<PagingData<Article>>
 
     // db related.
 

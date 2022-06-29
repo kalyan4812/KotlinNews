@@ -10,6 +10,7 @@ import com.saikalyandaroju.kotlinnews.model.source.remote.NewsApi
 import com.saikalyandaroju.kotlinnews.utils.Network.NetworkResponseHandler
 import okhttp3.internal.wait
 import retrofit2.HttpException
+import retrofit2.Response
 import java.io.IOException
 import javax.inject.Inject
 
@@ -36,47 +37,105 @@ class ArticlePagingSource(
         val current_page = params.key ?: 1 // for first time page will be null ,so make it 1.
 
 
+        if (query == null) {
+            return try {
 
-        return try {
+                val response = newsApi.getBreakingNews(countryCode, current_page)
 
-            val response = newsApi.getBreakingNews(countryCode, current_page)
+                checkResponseFrom(response)
 
+                val res = response.body()?.articles ?: emptyList()
 
+                val list = mutableListOf<Article>()
+                list.addAll(res)
 
-            val res = response.body()?.articles ?: emptyList()
-
-            val list = mutableListOf<Article>()
-            list.addAll(res)
-
-            val nextKey = if (res.isEmpty()) {
-                null
-            } else {
-                // initial load size = 3 * NETWORK_PAGE_SIZE
-                // ensure we're not requesting duplicating items, at the 2nd request
-
-                if (
-                    params.loadSize == 3 * NETWORK_PAGE_SIZE
-                ) {
-                    current_page + 1
+                val nextKey = if (res.isEmpty()) {
+                    null
                 } else {
-                    current_page + (params.loadSize / NETWORK_PAGE_SIZE)
+                    // initial load size = 3 * NETWORK_PAGE_SIZE
+                    // ensure we're not requesting duplicating items, at the 2nd request
+
+                    if (
+                        params.loadSize == 3 * NETWORK_PAGE_SIZE
+                    ) {
+                        current_page + 1
+                    } else {
+                        current_page + (params.loadSize / NETWORK_PAGE_SIZE)
+                    }
                 }
+
+                return LoadResult.Page(
+                    data = list,
+                    prevKey = if (current_page == 1) null else current_page - 1,
+                    nextKey = nextKey
+                )
+
+            } catch (e: IOException) {
+                println(e.localizedMessage)
+                LoadResult.Error(e)
+            } catch (e: HttpException) {
+                println(e.localizedMessage)
+                LoadResult.Error(e)
             }
 
-            return LoadResult.Page(
-                data = list,
-                prevKey = if (current_page == 1) null else current_page - 1,
-                nextKey = nextKey
-            )
+        } else if (query.isNotEmpty()) {
+            return try {
 
-        } catch (e: IOException) {
-            println(e.localizedMessage)
-            LoadResult.Error(e)
-        } catch (e: HttpException) {
-            println(e.localizedMessage)
-            LoadResult.Error(e)
+                val response = newsApi.searchForNews(query, current_page)
+
+
+                val res = response.body()?.articles ?: emptyList()
+
+                val list = mutableListOf<Article>()
+                list.addAll(res)
+
+                val nextKey = if (res.isEmpty()) {
+                    null
+                } else {
+                    // initial load size = 3 * NETWORK_PAGE_SIZE
+                    // ensure we're not requesting duplicating items, at the 2nd request
+
+                    if (
+                        params.loadSize == 3 * NETWORK_PAGE_SIZE
+                    ) {
+                        current_page + 1
+                    } else {
+                        current_page + (params.loadSize / NETWORK_PAGE_SIZE)
+                    }
+                }
+
+                return LoadResult.Page(
+                    data = list,
+                    prevKey = if (current_page == 1) null else current_page - 1,
+                    nextKey = nextKey
+                )
+
+            } catch (e: IOException) {
+                println(e.localizedMessage)
+                LoadResult.Error(e)
+            } catch (e: HttpException) {
+                println(e.localizedMessage)
+                LoadResult.Error(e)
+            }
+        } else {
+            return LoadResult.Error(Throwable("error"))
         }
 
+
+    }
+
+    private val TAG = "ArticlePagingSource"
+    private fun checkResponseFrom(response: Response<NewsResponse>) {
+        if (response.isSuccessful) {
+
+            if (response.raw().networkResponse != null && response.raw().cacheResponse == null) {
+                Log.i(TAG, "Response is from network.")
+                println("Response is from network.")
+            } else if (response.raw().networkResponse == null && response.raw().cacheResponse != null) {
+                Log.i(TAG, "Response is from cache.")
+                println("Response is from cache.")
+            }
+        }
 
     }
 

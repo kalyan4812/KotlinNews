@@ -18,29 +18,19 @@ class NewsRepository(val articleDao: ArticleDao, val newsApi: NewsApi) : GlobalN
 
     // network related.
 
-    /*   override suspend fun getBreakingNews(
-           countryCode: String,
-           pagenumber: Int
-       ): NetworkResponseHandler<NewsResponse> {
-           newsApi.getBreakingNews(countryCode, pagenumber).body()?.let {
-               return NetworkResponseHandler.Success(it)
-           }
-
-           return NetworkResponseHandler.Error(State.ERROR,null,"Error")
-
-       }*/
-
     override suspend fun getSearchedNews(
         query: String,
         pagenumber: Int
-    ): NetworkResponseHandler<NewsResponse> {
-        Log.i("check", newsApi.toString())
+    ): LiveData<PagingData<Article>> {
 
-        newsApi.searchForNews(query, pagenumber).body()?.let {
-            return NetworkResponseHandler.Success(it)
-        }
 
-        return NetworkResponseHandler.Error(State.ERROR, null, "Error")
+        return Pager(
+            config = PagingConfig(
+                pageSize = 10,
+                maxSize = 30, enablePlaceholders = false
+            ), pagingSourceFactory = { ArticlePagingSource(newsApi, query, "us") }
+
+        ).liveData
 
     }
 
@@ -49,7 +39,7 @@ class NewsRepository(val articleDao: ArticleDao, val newsApi: NewsApi) : GlobalN
         countryCode: String,
         pagenumber: Int
     ): LiveData<PagingData<Article>> {
-
+        println("called.................................")
         return Pager(
             config = PagingConfig(
                 pageSize = 10,

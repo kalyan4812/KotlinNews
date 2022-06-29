@@ -6,12 +6,14 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.saikalyandaroju.kotlinnews.R
 import com.saikalyandaroju.kotlinnews.model.adapters.NewsAdapter
+import com.saikalyandaroju.kotlinnews.model.adapters.NewsPagingAdapter
 import com.saikalyandaroju.kotlinnews.utils.baseclasses.BaseFragment
 import com.saikalyandaroju.kotlinnews.model.source.models.Article
 import com.saikalyandaroju.kotlinnews.ui.viewmodel.NewsViewModel
@@ -24,7 +26,8 @@ import javax.inject.Inject
 class saveNewsFragment : BaseFragment<NewsViewModel>() {
 
     @Inject
-    lateinit var newsAdapter:NewsAdapter
+    lateinit var pagingAdapter: NewsAdapter
+
     val viewModel: NewsViewModel by viewModels()
     lateinit var callback: ItemTouchHelper.Callback
 
@@ -44,8 +47,6 @@ class saveNewsFragment : BaseFragment<NewsViewModel>() {
         subscribeToObservers()
 
 
-
-
     }
 
     private fun initSwiper(view: View?) {
@@ -63,7 +64,7 @@ class saveNewsFragment : BaseFragment<NewsViewModel>() {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val pos = viewHolder.adapterPosition
-                val article = newsAdapter.getList().get(pos)
+                val article = pagingAdapter.getList().get(pos)
                 viewModel.deleteArticle(article)
 
                 Snackbar.make(view!!, "Deleted Successfully", Snackbar.LENGTH_SHORT).setAction(
@@ -84,7 +85,7 @@ class saveNewsFragment : BaseFragment<NewsViewModel>() {
 
                     val view = viewHolder.itemView
                     val p = Paint()
-                    val bitmap:Bitmap
+                    val bitmap: Bitmap
                     //dx>0 swipe left to right
 
                     if (dX < 0) {
@@ -98,7 +99,7 @@ class saveNewsFragment : BaseFragment<NewsViewModel>() {
 
                         c.drawBitmap(
                             bitmap,
-                            view.right.toFloat()-bitmap.width.toFloat(),
+                            view.right.toFloat() - bitmap.width.toFloat(),
                             view.top.toFloat() + (view.bottom.toFloat() - view.top.toFloat() - bitmap.height.toFloat()) / 2,
                             p
                         )
@@ -140,9 +141,10 @@ class saveNewsFragment : BaseFragment<NewsViewModel>() {
     }
 
     private fun subscribeToObservers() {
+
         viewModel.getSavedNews().observe(viewLifecycleOwner, Observer { articles ->
 
-            newsAdapter.setList(articles as List<Article>)
+            pagingAdapter.setList(articles as List<Article>)
 
         })
         shimmerFrameLayout.stopShimmer()
@@ -150,7 +152,7 @@ class saveNewsFragment : BaseFragment<NewsViewModel>() {
     }
 
     private fun setUpListeners() {
-        newsAdapter.setOnClickListener(object : NewsAdapter.ClickListener {
+        pagingAdapter.setOnClickListener(object : NewsAdapter.ClickListener {
             override fun onClick(article: Article?) {
                 val bundle = Bundle()
                 bundle.apply {
@@ -169,11 +171,11 @@ class saveNewsFragment : BaseFragment<NewsViewModel>() {
     private fun initRecyclerView(view: View?) {
 
         rvSavedNews.apply {
-            adapter = newsAdapter
+            adapter = pagingAdapter
             layoutManager = LinearLayoutManager(activity)
         }
 
-       ItemTouchHelper(callback).attachToRecyclerView(rvSavedNews)
+        ItemTouchHelper(callback).attachToRecyclerView(rvSavedNews)
     }
 
     override fun onDestroyView() {
