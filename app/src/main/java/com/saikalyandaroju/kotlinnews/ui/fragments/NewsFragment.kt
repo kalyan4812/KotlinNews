@@ -9,9 +9,12 @@ import androidx.lifecycle.Observer
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
+import androidx.paging.map
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.RequestManager
 import com.saikalyandaroju.kotlinnews.R
 import com.saikalyandaroju.kotlinnews.model.adapters.NewsAdapter
+import com.saikalyandaroju.kotlinnews.model.adapters.NewsPagingAdapter
 import com.saikalyandaroju.kotlinnews.utils.baseclasses.BaseFragment
 import com.saikalyandaroju.kotlinnews.model.source.models.Article
 import com.saikalyandaroju.kotlinnews.model.source.models.NewsResponse
@@ -33,6 +36,11 @@ class NewsFragment : BaseFragment<NewsViewModel>() {
     @Inject
     lateinit var newsAdapter: NewsAdapter
 
+    @Inject
+    lateinit var requestManager: RequestManager
+
+    lateinit var pagingAdapter: NewsPagingAdapter
+
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_news
@@ -43,7 +51,7 @@ class NewsFragment : BaseFragment<NewsViewModel>() {
 
         subscribeToObservers()
 
-        newsAdapter.setOnClickListener(object : NewsAdapter.ClickListener {
+        pagingAdapter.setOnClickListener(object : NewsPagingAdapter.ClickListener {
             override fun onClick(article: Article?) {
                 val bundle = Bundle()
                 bundle.apply {
@@ -70,11 +78,12 @@ class NewsFragment : BaseFragment<NewsViewModel>() {
 
             when (response) {
                 is NetworkResponseHandler.Success -> {
-
+                    println("success")
                     hideProgressBar()
 
                     response.data?.let { newsresponse ->
-                        newsAdapter.setList(newsresponse.articles)
+                        println(newsresponse)
+                        pagingAdapter.submitData(lifecycle,newsresponse)
                     }
                     shimmerFrameLayout.stopShimmer()
                     shimmerFrameLayout.setVisibility(View.GONE)
@@ -83,6 +92,7 @@ class NewsFragment : BaseFragment<NewsViewModel>() {
 
                 }
                 is NetworkResponseHandler.Error -> {
+                    println("error")
                     hideProgressBar()
                     response.message?.let {
                         Log.d(TAG, it)
@@ -113,9 +123,9 @@ class NewsFragment : BaseFragment<NewsViewModel>() {
     }
 
     private fun initRecyclerView(view: View?) {
-
+      pagingAdapter= NewsPagingAdapter(requestManager)
         rvBreakingNews.apply {
-            adapter = newsAdapter
+            adapter = pagingAdapter
             layoutManager = LinearLayoutManager(activity)
         }
 

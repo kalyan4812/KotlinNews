@@ -183,6 +183,12 @@ dependencies {
     //debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 
 
+    // Paging 3
+    def pagingVersion = '3.0.0'
+
+    implementation "androidx.paging:paging-runtime:$pagingVersion"
+    //implementation "androidx.paging:paging-runtime-ktx:$pagingVersion"
+
 }
 kapt {
     correctErrorTypes true

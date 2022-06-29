@@ -2,6 +2,9 @@ package com.saikalyandaroju.kotlinnews.ui.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.*
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.map
 import com.saikalyandaroju.kotlinnews.model.repository.GlobalNewsRepository
 import com.saikalyandaroju.kotlinnews.model.repository.NewsRepository
 import com.saikalyandaroju.kotlinnews.model.source.models.Article
@@ -13,6 +16,7 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import okhttp3.internal.wait
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -27,8 +31,9 @@ class NewsViewModel @Inject constructor(
     // to do constructur mechanism of getting object/our own instance we need cutsom viewmodelfactory.
     private val TAG = "NewsViewModel"
 
-    val breakingNewsresponse: MutableLiveData<NetworkResponseHandler<NewsResponse>> =
+    val breakingNewsresponse: MutableLiveData<NetworkResponseHandler<PagingData<Article>>> =
         MutableLiveData()
+
 
     var breakingNewsPage = 1
 
@@ -57,32 +62,50 @@ class NewsViewModel @Inject constructor(
 
         breakingNewsresponse.postValue(NetworkResponseHandler.Loading())
 
-        val response = newRepository.getBreakingNews(countryCode, breakingNewsPage)
 
-        breakingNewsresponse.postValue(response)
+        //   val response =
+        newRepository.getBreakingNews(countryCode, breakingNewsPage).observeForever {
+            breakingNewsresponse.postValue(
+                handleNewsResponse(
+                    it
+                )
+            )
+        }
 
 
     }
 
-    private fun handleNewsResponse(response: Response<NewsResponse>): NetworkResponseHandler<NewsResponse>? {
-        if (response.isSuccessful) {
+    private fun handleNewsResponse(response: PagingData<Article>?):
+            NetworkResponseHandler<PagingData<Article>> {
 
-            if (response.raw().networkResponse != null && response.raw().cacheResponse == null) {
-                Log.i(TAG, "Response is from network.")
-                println("Response is from network.")
-            } else if (response.raw().networkResponse == null && response.raw().cacheResponse != null) {
-                Log.i(TAG, "Response is from cache.")
-                println("Response is from cache.")
-            }
-
-            response.body()?.let { result ->
-                Log.i("result", result.articles.toString())
-                return NetworkResponseHandler.Success(result)
-            }
-
+        println("response is  $response")
+        if (response != null) {
+            return NetworkResponseHandler.Success(response)
         }
 
-        return NetworkResponseHandler.Error(State.ERROR,response.body(), null)
+
+        return NetworkResponseHandler.Error(State.ERROR, null, null)
+
+
+        /*   if (response.isSuccessful) {
+
+               if (response.raw().networkResponse != null && response.raw().cacheResponse == null) {
+                   Log.i(TAG, "Response is from network.")
+                   println("Response is from network.")
+               } else if (response.raw().networkResponse == null && response.raw().cacheResponse != null) {
+                   Log.i(TAG, "Response is from cache.")
+                   println("Response is from cache.")
+               }
+
+               response.body()?.let { result ->
+                   Log.i("result", result.articles.toString())
+                   return NetworkResponseHandler.Success(result)
+               }
+
+           }
+
+           return NetworkResponseHandler.Error(State.ERROR,response.body(), null)*/
+
 
     }
 
@@ -106,11 +129,11 @@ class NewsViewModel @Inject constructor(
             }
         }
 
-        return NetworkResponseHandler.Error(State.ERROR,response.body(), null)
+        return NetworkResponseHandler.Error(State.ERROR, response.body(), null)
     }
 //-------------------------------------------------------------------------------------------------
 
-    fun saveArticle(article: Article){
+    fun saveArticle(article: Article) {
 
 
         viewModelScope.launch {
@@ -125,9 +148,6 @@ class NewsViewModel @Inject constructor(
 
 
         }
-
-
-
 
 
     }
