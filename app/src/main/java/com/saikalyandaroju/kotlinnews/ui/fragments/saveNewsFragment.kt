@@ -7,9 +7,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.*
 import com.google.android.material.snackbar.Snackbar
 import com.saikalyandaroju.kotlinnews.R
 import com.saikalyandaroju.kotlinnews.model.adapters.NewsAdapter
@@ -17,6 +15,7 @@ import com.saikalyandaroju.kotlinnews.model.adapters.NewsPagingAdapter
 import com.saikalyandaroju.kotlinnews.utils.baseclasses.BaseFragment
 import com.saikalyandaroju.kotlinnews.model.source.models.Article
 import com.saikalyandaroju.kotlinnews.ui.viewmodel.NewsViewModel
+import com.saikalyandaroju.kotlinnews.utils.StartSnapHelper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_save_news.*
 import kotlinx.android.synthetic.main.shimmer_holder.*
@@ -170,10 +169,14 @@ class saveNewsFragment : BaseFragment<NewsViewModel>() {
 
     private fun initRecyclerView(view: View?) {
 
+        // this snaphelper makes recycler items always full visible/show views so that
+        // they are fully visible not partial at start when you scroll.
+        val snapHelper: SnapHelper =StartSnapHelper()
         rvSavedNews.apply {
             adapter = pagingAdapter
-            layoutManager = LinearLayoutManager(activity)
+            layoutManager = LinearLayoutManager(activity,LinearLayoutManager.VERTICAL,false)
         }
+        snapHelper.attachToRecyclerView(rvSavedNews)
 
         ItemTouchHelper(callback).attachToRecyclerView(rvSavedNews)
     }

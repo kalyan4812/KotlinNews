@@ -9,6 +9,8 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSnapHelper
+import androidx.recyclerview.widget.SnapHelper
 import com.saikalyandaroju.kotlinnews.R
 import com.saikalyandaroju.kotlinnews.model.adapters.NewsAdapter
 import com.saikalyandaroju.kotlinnews.model.adapters.NewsPagingAdapter
@@ -16,6 +18,7 @@ import com.saikalyandaroju.kotlinnews.utils.baseclasses.BaseFragment
 import com.saikalyandaroju.kotlinnews.model.source.models.Article
 import com.saikalyandaroju.kotlinnews.ui.viewmodel.NewsViewModel
 import com.saikalyandaroju.kotlinnews.utils.Network.NetworkResponseHandler
+import com.saikalyandaroju.kotlinnews.utils.StartSnapHelper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_news.paginationProgressBar
 import kotlinx.android.synthetic.main.fragment_search_news.*
@@ -127,13 +130,17 @@ class searchNewsFragment : BaseFragment<NewsViewModel>() {
     }
 
     private fun initRecyclerView(view: View?) {
+        // this snaphelper makes recycler items always full visible/show views so that
+        // they are fully visible not partial at start when you scroll.
+        val snapHelper =StartSnapHelper()
 
         rvSearchNews.apply {
             adapter = pagingAdapter
-            layoutManager = LinearLayoutManager(activity)
+            layoutManager = LinearLayoutManager(activity,LinearLayoutManager.VERTICAL,false)
+
         }
 
-
+        snapHelper.attachToRecyclerView(rvSearchNews)
     }
 
 }

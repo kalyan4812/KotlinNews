@@ -11,6 +11,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import androidx.paging.map
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSnapHelper
+import androidx.recyclerview.widget.SnapHelper
 import com.bumptech.glide.RequestManager
 import com.saikalyandaroju.kotlinnews.R
 import com.saikalyandaroju.kotlinnews.model.adapters.NewsAdapter
@@ -20,6 +22,7 @@ import com.saikalyandaroju.kotlinnews.model.source.models.Article
 import com.saikalyandaroju.kotlinnews.model.source.models.NewsResponse
 import com.saikalyandaroju.kotlinnews.ui.viewmodel.NewsViewModel
 import com.saikalyandaroju.kotlinnews.utils.Network.NetworkResponseHandler
+import com.saikalyandaroju.kotlinnews.utils.StartSnapHelper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_news.*
 import kotlinx.android.synthetic.main.shimmer_holder.*
@@ -82,7 +85,7 @@ class NewsFragment : BaseFragment<NewsViewModel>() {
 
                     response.data?.let { newsresponse ->
                         println(newsresponse)
-                        pagingAdapter.submitData(lifecycle,newsresponse)
+                        pagingAdapter.submitData(lifecycle, newsresponse)
                     }
                     shimmerFrameLayout.stopShimmer()
                     shimmerFrameLayout.setVisibility(View.GONE)
@@ -122,13 +125,19 @@ class NewsFragment : BaseFragment<NewsViewModel>() {
     }
 
     private fun initRecyclerView(view: View?) {
-      pagingAdapter= NewsPagingAdapter(requestManager)
+        pagingAdapter = NewsPagingAdapter(requestManager)
+
+        // this snaphelper makes recycler items always full visible/show views so that
+        // they are fully visible not partial at start when you scroll.
+        val snapHelper = StartSnapHelper()
+
+
         rvBreakingNews.apply {
             adapter = pagingAdapter
-            layoutManager = LinearLayoutManager(activity)
+            layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         }
 
-
+        snapHelper.attachToRecyclerView(rvBreakingNews)
     }
 
     override fun onDestroyView() {
